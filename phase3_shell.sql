@@ -186,9 +186,15 @@ BEGIN
     INSERT INTO test_sign_up_filter_result
 
     -- Type solution below
-
-    SELECT * FROM User;
-
+    SELECT appt_date, appt_time, street, city, state, zip, appointment.site_name
+    FROM appointment JOIN site ON  appointment.site_name = site.site_name
+    WHERE appointment.username IS NULL
+		AND site.location = (SELECT location FROM student JOIN user ON username = student_username WHERE student_username = i_username) 
+		AND ((site.site_name = i_testing_site) OR i_testing_site IS NULL)
+        AND ((appointment.appt_date >= i_start_date) OR i_start_date IS NULL)
+        AND ((appointment.appt_date <= i_end_date) OR i_end_date IS NULL)
+        AND ((appointment.appt_time >= i_start_time) OR i_start_time IS NULL)
+        AND ((appointment.appt_time <= i_end_time) OR i_end_time IS NULL);
     -- End of solution
 
     END //
