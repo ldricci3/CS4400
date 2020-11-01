@@ -421,9 +421,9 @@ BEGIN
 
     INSERT INTO view_testers_result
 -- Type solution below
-
-    SELECT * FROM User;
-
+    SELECT sitetester_username, CONCAT(fname, " ", lname), phone_num, GROUP_CONCAT(site)
+	FROM ((SITETESTER LEFT JOIN EMPLOYEE ON (sitetester_username = emp_username)) LEFT JOIN USER ON (username = emp_username)) LEFT JOIN WORKING_AT ON (sitetester_username = WORKING_AT.username)
+	GROUP BY sitetester_username;
 -- End of solution
 END //
 DELIMITER ;
@@ -467,9 +467,9 @@ BEGIN
 
     INSERT INTO pool_metadata_result
 -- Type solution below
-
-    SELECT * FROM User;
-
+    SELECT pool_id, process_date, processed_by, pool_status
+    FROM POOL
+    WHERE pool_id = i_pool_id;
 -- End of solution
 END //
 DELIMITER ;
@@ -491,9 +491,7 @@ BEGIN
 
     INSERT INTO tests_in_pool_result
 -- Type solution below
-
-    SELECT * FROM User;
-
+    SELECT test_id, appt_date, appt_site, test_status FROM TEST WHERE pool_id = i_pool_id;
 -- End of solution
 END //
 DELIMITER ;
