@@ -186,9 +186,15 @@ BEGIN
     INSERT INTO test_sign_up_filter_result
 
     -- Type solution below
-
-    SELECT * FROM User;
-
+    SELECT appt_date, appt_time, street, city, state, zip, appointment.site_name
+    FROM appointment JOIN site ON  appointment.site_name = site.site_name
+    WHERE appointment.username IS NULL
+		AND site.location = (SELECT location FROM student JOIN user ON username = student_username WHERE student_username = i_username) 
+		AND ((site.site_name = i_testing_site) OR i_testing_site IS NULL)
+        AND ((appointment.appt_date >= i_start_date) OR i_start_date IS NULL)
+        AND ((appointment.appt_date <= i_end_date) OR i_end_date IS NULL)
+        AND ((appointment.appt_time >= i_start_time) OR i_start_time IS NULL)
+        AND ((appointment.appt_time <= i_end_time) OR i_end_time IS NULL);
     -- End of solution
 
     END //
@@ -208,6 +214,24 @@ CREATE PROCEDURE test_sign_up(
 BEGIN
 -- Type solution below
 
+    SELECT username
+    INTO @curr_appointment_username
+    FROM appointment JOIN site on appointment.site_name = site.site_name
+    WHERE site.location = (SELECT location FROM student JOIN user ON username = student_username WHERE student_username = i_username)
+		AND appointment.site_name = i_site_name AND appt_date = i_appt_date AND appt_time = i_appt_time;
+
+    SELECT DISTINCT username
+    INTO @curr_appointment_pending_username
+    FROM appointment JOIN test ON appt_site = site_name AND test.appt_date = appointment.appt_date AND test.appt_time = appointment.appt_time
+    WHERE test_status = "pending";
+    
+    IF
+        (@curr_appointment_username IS NULL) AND (i_username NOT IN (@curr_appointment_pending_username))
+    THEN
+        UPDATE appointment
+        SET  username = i_username
+        WHERE site_name = i_site_name AND appt_date = i_appt_date AND appt_time = i_appt_time;
+    END IF;
 
 -- End of solution
 END //
