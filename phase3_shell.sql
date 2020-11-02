@@ -374,6 +374,7 @@ DELIMITER ;
 -- ID: 13a
 -- Author: dvaidyanathan6@
 -- Name: view_appointments
+
 DROP PROCEDURE IF EXISTS view_appointments;
 DELIMITER //
 CREATE PROCEDURE view_appointments(
@@ -397,7 +398,39 @@ BEGIN
     INSERT INTO view_appointments_result
 -- Type solution below
 
-    SELECT * FROM User;
+    select appt_date, appt_time, APPOINTMENT.site_name, location, username 
+	from APPOINTMENT left join SITE on APPOINTMENT.site_name = SITE.site_name
+	where 
+	(case 
+		when i_begin_appt_date is null then True
+		else appt_date > i_begin_appt_date
+	end)
+	and
+	(case 
+		when i_end_appt_date is null then True
+		else appt_date < i_end_appt_date
+	end)
+	and
+	(case 
+		when i_begin_appt_time is null then True
+		else appt_time > i_begin_appt_time
+	end)
+	and
+	(case 
+		when i_end_appt_time is null then True
+		else appt_time < i_end_appt_time
+	end)
+	and
+	(case 
+		when i_site_name is null then True
+		else APPOINTMENT.site_name = i_site_name
+	end)
+	and
+	(case 
+		when i_is_available is null then True
+		when i_is_available = 0 then username is null
+		else username is not null
+	end);
 
 -- End of solution
 END //
@@ -444,8 +477,13 @@ CREATE PROCEDURE create_testing_site(
 )
 BEGIN
 -- Type solution below
-
-
+	INSERT INTO SITE(site_name, street, city, state, zip, location)
+    SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username); 
+	
+    INSERT INTO WORKING_AT(username, site)
+    SELECT i_site_name, i_first_tester_username
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username);
 -- End of solution
 END //
 DELIMITER ;
