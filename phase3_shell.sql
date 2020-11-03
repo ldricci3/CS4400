@@ -258,7 +258,12 @@ BEGIN
     INSERT INTO tests_processed_result
     -- Type solution below
 
-        SELECT * FROM User;
+        SELECT test_id, test.pool_id, appt_date AS test_date, process_date, test_status
+        FROM test JOIN pool ON test.pool_id = pool.pool_id
+        WHERE ((appt_date >= i_start_date) OR i_start_date IS NULL)
+			AND ((appt_date <= i_end_date) OR i_end_date IS NULL)
+            AND ((test_status = i_test_status) OR i_test_status IS NULL)
+            AND (processed_by = i_lab_tech_username);
 
     -- End of solution
     END //
