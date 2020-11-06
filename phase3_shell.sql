@@ -209,33 +209,43 @@ CREATE PROCEDURE test_sign_up(
 		IN i_username VARCHAR(40),
         IN i_site_name VARCHAR(40),
         IN i_appt_date date,
-        IN i_appt_time time
+        IN i_appt_time time,
+        IN i_test_id VARCHAR(7)
 )
 BEGIN
 -- Type solution below
 
     SELECT username
     INTO @curr_appointment_username
-    FROM appointment JOIN site on appointment.site_name = site.site_name
+    FROM appointment JOIN site ON appointment.site_name = site.site_name
     WHERE site.location = (SELECT location FROM student JOIN user ON username = student_username WHERE student_username = i_username)
 		AND appointment.site_name = i_site_name AND appt_date = i_appt_date AND appt_time = i_appt_time;
 
-    SELECT DISTINCT username
+    SELECT username
     INTO @curr_appointment_pending_username
     FROM appointment JOIN test ON appt_site = site_name AND test.appt_date = appointment.appt_date AND test.appt_time = appointment.appt_time
-    WHERE test_status = "pending";
+    WHERE test_status = "pending" AND username = i_username;
     
+    SELECT test_id
+    INTO @curr_test_id
+    FROM test JOIN appointment ON appt_site = site_name AND test.appt_date = appointment.appt_date AND test.appt_time = appointment.appt_time
+    WHERE test_id = i_test_id;
+        
     IF
-        (@curr_appointment_username IS NULL) AND (i_username NOT IN (@curr_appointment_pending_username))
+        (@curr_appointment_username IS NULL) AND (@curr_appointment_pending_username IS NULL) and (@curr_test_id IS NULL)
     THEN
         UPDATE appointment
         SET  username = i_username
         WHERE site_name = i_site_name AND appt_date = i_appt_date AND appt_time = i_appt_time;
+        INSERT INTO test(test_id, test_status, pool_id, appt_site, appt_date, appt_time)
+        VALUES(i_test_id, "pending", NULL, i_site_name, i_appt_date, i_appt_time);
     END IF;
 
 -- End of solution
 END //
 DELIMITER ;
+
+CALL test_sign_up('pbuffay56', 'Bobby Dodd Stadium', '2020-09-16', '12:00:00', '12345');
 
 -- Number: 8a
 -- Author: lvossler3
