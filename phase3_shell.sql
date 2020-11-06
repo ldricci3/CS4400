@@ -245,8 +245,6 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL test_sign_up('pbuffay56', 'Bobby Dodd Stadium', '2020-09-16', '12:00:00', '12345');
-
 -- Number: 8a
 -- Author: lvossler3
 -- Name: tests_processed
