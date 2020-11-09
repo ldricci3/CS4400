@@ -514,37 +514,12 @@ BEGIN
 
     select appt_date, appt_time, APPOINTMENT.site_name, location, username 
 	from APPOINTMENT left join SITE on APPOINTMENT.site_name = SITE.site_name
-	where 
-	(case 
-		when i_begin_appt_date is null then True
-		else appt_date > i_begin_appt_date
-	end)
-	and
-	(case 
-		when i_end_appt_date is null then True
-		else appt_date < i_end_appt_date
-	end)
-	and
-	(case 
-		when i_begin_appt_time is null then True
-		else appt_time > i_begin_appt_time
-	end)
-	and
-	(case 
-		when i_end_appt_time is null then True
-		else appt_time < i_end_appt_time
-	end)
-	and
-	(case 
-		when i_site_name is null then True
-		else APPOINTMENT.site_name = i_site_name
-	end)
-	and
-	(case 
-		when i_is_available is null then True
-		when i_is_available = 0 then username is null
-		else username is not null
-	end);
+	where (i_begin_appt_date IS NULL OR i_begin_appt_date <= appt_date ) 
+		AND (i_end_appt_date IS NULL OR i_end_appt_date >= appt_date) 
+        AND (i_begin_appt_time IS NULL OR i_begin_appt_time <= appt_time) 
+        AND (i_end_appt_time IS NULL OR i_end_appt_time >= appt_time)
+        AND (i_site_name IS NULL OR i_site_name = APPOINTMENT.site_name)
+        AND (i_is_available IS NULL OR (i_is_available = 0 AND username IS NOT NULL) OR (i_is_available = 1 AND username IS NULL));
 
 -- End of solution
 END //
