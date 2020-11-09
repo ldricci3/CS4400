@@ -567,12 +567,14 @@ CREATE PROCEDURE create_testing_site(
 BEGIN
 -- Type solution below
 	INSERT INTO SITE(site_name, street, city, state, zip, location)
-    SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location
-    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username); 
+    SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location 
+    FROM DUAL
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username); 
 	
     INSERT INTO WORKING_AT(username, site)
-    SELECT i_site_name, i_first_tester_username
-    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username);
+    SELECT i_first_tester_username, i_site_name
+    FROM DUAL
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username);
 -- End of solution
 END //
 DELIMITER ;
