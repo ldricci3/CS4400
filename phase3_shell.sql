@@ -3,7 +3,7 @@ CS4400: Introduction to Database Systems
 Fall 2020
 Phase III Template
 
-Team ##
+Team 41
 Andrew Johnston (ajohnston41)
 Colin Keenan (ckeenan9)
 Leo Ricci (lricci7)
