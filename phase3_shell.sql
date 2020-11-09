@@ -478,9 +478,10 @@ CREATE PROCEDURE create_appointment(
 )
 BEGIN
 -- Type solution below
-	INSERT INTO APPOINTMENT(username, site_name, appt_date, apt_time)
+	INSERT INTO APPOINTMENT(username, site_name, appt_date, appt_time)
     SELECT null, i_site_name, i_date, i_time
-    WHERE (SELECT COUNT(*) FROM APPOINTMENT WHERE site_name = i_site_name AND appt_date = i_date) > (SELECT 10 *COUNT(*) FROM WORKING_AT WHERE site = i_site_name);
+    FROM DUAL
+    WHERE (SELECT COUNT(*) FROM APPOINTMENT WHERE site_name = i_site_name AND appt_date = i_date) < (SELECT 10 *COUNT(*) FROM WORKING_AT WHERE site = i_site_name);
 -- End of solution
 END //
 DELIMITER ;
