@@ -594,8 +594,8 @@ BEGIN
 
     INSERT INTO pool_metadata_result
 -- Type solution below
-    SELECT pool_id, process_date, processed_by, pool_status
-    FROM POOL
+    SELECT pool_id, process_date, pool_status as pooled_result, concat(fname, ' ', lname) as processed_by 
+    FROM POOL left join USER on (USER.username = POOL.processed_by) 
     WHERE pool_id = i_pool_id;
 -- End of solution
 END //
