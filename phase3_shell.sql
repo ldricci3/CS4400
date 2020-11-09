@@ -459,8 +459,9 @@ CREATE PROCEDURE process_test(
 )
 BEGIN
 -- Type solution below
-
-
+	update test
+    set test_status = i_test_status
+    where test_id = i_test_id;
 -- End of solution
 END //
 DELIMITER ;
@@ -641,7 +642,8 @@ BEGIN
     INSERT INTO tester_assigned_sites_result
 -- Type solution below
 
-    SELECT * FROM User;
+    SELECT site FROM working_at
+    where username = i_tester_username;
 
 -- End of solution
 END //
@@ -658,8 +660,8 @@ CREATE PROCEDURE assign_tester(
 )
 BEGIN
 -- Type solution below
-
-
+	insert into working_at values(
+    (i_tester_username, i_site_name));
 -- End of solution
 END //
 DELIMITER ;
@@ -676,8 +678,10 @@ CREATE PROCEDURE unassign_tester(
 )
 BEGIN
 -- Type solution below
-
-
+	if exists(select * from working_at where site = i_site_name and not username = i_tester_username) then
+    delete from working_at
+    where username = i_tester_username and site = i_site_name;
+    end if;
 -- End of solution
 END //
 DELIMITER ;
@@ -698,9 +702,10 @@ BEGIN
         pos_percent DECIMAL(6,2));
 	INSERT INTO daily_results_result
     -- Type solution below
-
-    SELECT * FROM User;
-
+	SELECT process_date, count(test_id), count(if(test_status like 'positive',1,null)), 100 * count(if(test_status like 'positive',1,null))/count(test_id)
+    FROM pool natural join test
+    group by process_date
+    having process_date is not null;
     -- End of solution
     END //
     DELIMITER ;
