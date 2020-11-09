@@ -32,8 +32,8 @@ CREATE PROCEDURE register_student(
 BEGIN
 
 -- Type solution below
-
-
+INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
+INSERT INTO student (student_username, housing_type, location) VALUES (i_username, i_housing_type, i_location);
 -- End of solution
 END //
 DELIMITER ;
@@ -55,7 +55,16 @@ CREATE PROCEDURE register_employee(
 )
 BEGIN
 -- Type solution below
+INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
+INSERT INTO employee (emp_username, phone_num) VALUES (i_username, i_phone);
 
+IF i_labtech = true THEN
+	INSERT INTO labtech (labtech_username) VALUES (i_username);
+END IF;
+
+IF i_sitetester = true THEN
+	INSERT INTO sitetester (sitetester_username) VALUES (i_username);
+END IF;
 
 -- End of solution
 END //
@@ -125,7 +134,9 @@ BEGIN
 
     -- Type solution below
 
-        SELECT * FROM User;
+	SELECT test_id, appt_date, appt_time as 'timeslot', appt_site as 'testing_location', process_date as 'date_processed', pool_status as 'pooled_result', test_status as 'individual_result', concat(fname, ' ', lname) as 'processed_by'
+	from test, pool, user
+	where test_id = i_test_id and test.pool_id = pool.pool_id and processed_by = username;
 
     -- End of solution
 END$$
@@ -154,7 +165,62 @@ BEGIN
 
     -- Type solution below
 
-    SELECT * FROM User;
+    	SELECT test_status, count(distinct test_id) as num_of_tests, round((count(distinct test_id) / (
+		SELECT count(distinct test_id) 
+		FROM test, site, student, appointment
+		WHERE
+        	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
+	end)
+	and
+	(case 
+		when i_start_date is null then True
+		else test.appt_date >= i_start_date
+	end)
+	and
+	(case 
+		when i_end_date is null then True
+		else test.appt_date <= i_end_date
+	end)
+		)) * 100, 2) as percentage
+	FROM test, site, student, appointment
+	WHERE 	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
+	end)
+	and
+	(case 
+		when i_start_date is null then True
+		else test.appt_date >= i_start_date
+	end)
+	and
+	(case 
+		when i_end_date is null then True
+		else test.appt_date <= i_end_date
+	end)
+	GROUP BY test_status;
+
 
     -- End of solution
 END$$
@@ -316,7 +382,8 @@ CREATE PROCEDURE create_pool(
 )
 BEGIN
 -- Type solution below
-
+INSERT INTO pool (pool_id, pool_status, process_date, processed_by) VALUES (i_pool_id, 'pending', NULL, NULL);
+UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
 
 -- End of solution
 END //
@@ -333,7 +400,17 @@ CREATE PROCEDURE assign_test_to_pool(
 )
 BEGIN
 -- Type solution below
+DECLARE TESTVAL INT;
+SELECT COUNT(pool_id) INTO TESTVAL
+FROM test 
+WHERE pool_id = i_pool_id;
 
+IF TESTVAL >= 7 THEN
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'There can be no more than 7 tests in a pool';
+END IF;
+
+UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
 
 -- End of solution
 END //
