@@ -3,7 +3,7 @@ CS4400: Introduction to Database Systems
 Fall 2020
 Phase III Template
 
-Team ##
+Team 41
 Andrew Johnston (ajohnston41)
 Colin Keenan (ckeenan9)
 Leo Ricci (lricci7)
@@ -32,8 +32,8 @@ CREATE PROCEDURE register_student(
 BEGIN
 
 -- Type solution below
-
-
+INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
+INSERT INTO student (student_username, housing_type, location) VALUES (i_username, i_housing_type, i_location);
 -- End of solution
 END //
 DELIMITER ;
@@ -55,7 +55,16 @@ CREATE PROCEDURE register_employee(
 )
 BEGIN
 -- Type solution below
+INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
+INSERT INTO employee (emp_username, phone_num) VALUES (i_username, i_phone);
 
+IF i_labtech = true THEN
+	INSERT INTO labtech (labtech_username) VALUES (i_username);
+END IF;
+
+IF i_sitetester = true THEN
+	INSERT INTO sitetester (sitetester_username) VALUES (i_username);
+END IF;
 
 -- End of solution
 END //
@@ -125,7 +134,9 @@ BEGIN
 
     -- Type solution below
 
-        SELECT * FROM User;
+	SELECT test_id, appt_date, appt_time as 'timeslot', appt_site as 'testing_location', process_date as 'date_processed', pool_status as 'pooled_result', test_status as 'individual_result', concat(fname, ' ', lname) as 'processed_by'
+	from test, pool, user
+	where test_id = i_test_id and test.pool_id = pool.pool_id and processed_by = username;
 
     -- End of solution
 END$$
@@ -154,7 +165,62 @@ BEGIN
 
     -- Type solution below
 
-    SELECT * FROM User;
+    	SELECT test_status, count(distinct test_id) as num_of_tests, round((count(distinct test_id) / (
+		SELECT count(distinct test_id) 
+		FROM test, site, student, appointment
+		WHERE
+        	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
+	end)
+	and
+	(case 
+		when i_start_date is null then True
+		else test.appt_date >= i_start_date
+	end)
+	and
+	(case 
+		when i_end_date is null then True
+		else test.appt_date <= i_end_date
+	end)
+		)) * 100, 2) as percentage
+	FROM test, site, student, appointment
+	WHERE 	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
+	end)
+	and
+	(case 
+		when i_start_date is null then True
+		else test.appt_date >= i_start_date
+	end)
+	and
+	(case 
+		when i_end_date is null then True
+		else test.appt_date <= i_end_date
+	end)
+	GROUP BY test_status;
+
 
     -- End of solution
 END$$
@@ -330,7 +396,8 @@ CREATE PROCEDURE create_pool(
 )
 BEGIN
 -- Type solution below
-
+INSERT INTO pool (pool_id, pool_status, process_date, processed_by) VALUES (i_pool_id, 'pending', NULL, NULL);
+UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
 
 -- End of solution
 END //
@@ -347,7 +414,17 @@ CREATE PROCEDURE assign_test_to_pool(
 )
 BEGIN
 -- Type solution below
+DECLARE TESTVAL INT;
+SELECT COUNT(pool_id) INTO TESTVAL
+FROM test 
+WHERE pool_id = i_pool_id;
 
+IF TESTVAL >= 7 THEN
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'There can be no more than 7 tests in a pool';
+END IF;
+
+UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
 
 -- End of solution
 END //
@@ -396,8 +473,9 @@ CREATE PROCEDURE process_test(
 )
 BEGIN
 -- Type solution below
-
-
+	update test
+    set test_status = i_test_status
+    where test_id = i_test_id;
 -- End of solution
 END //
 DELIMITER ;
@@ -415,9 +493,10 @@ CREATE PROCEDURE create_appointment(
 )
 BEGIN
 -- Type solution below
-	INSERT INTO APPOINTMENT(username, site_name, appt_date, apt_time)
+	INSERT INTO APPOINTMENT(username, site_name, appt_date, appt_time)
     SELECT null, i_site_name, i_date, i_time
-    WHERE (SELECT COUNT(*) FROM APPOINTMENT WHERE site_name = i_site_name AND appt_date = i_date) > (SELECT 10 *COUNT(*) FROM WORKING_AT WHERE site = i_site_name);
+    FROM DUAL
+    WHERE (SELECT COUNT(*) FROM APPOINTMENT WHERE site_name = i_site_name AND appt_date = i_date) < (SELECT 10 *COUNT(*) FROM WORKING_AT WHERE site = i_site_name);
 -- End of solution
 END //
 DELIMITER ;
@@ -451,37 +530,12 @@ BEGIN
 
     select appt_date, appt_time, APPOINTMENT.site_name, location, username 
 	from APPOINTMENT left join SITE on APPOINTMENT.site_name = SITE.site_name
-	where 
-	(case 
-		when i_begin_appt_date is null then True
-		else appt_date > i_begin_appt_date
-	end)
-	and
-	(case 
-		when i_end_appt_date is null then True
-		else appt_date < i_end_appt_date
-	end)
-	and
-	(case 
-		when i_begin_appt_time is null then True
-		else appt_time > i_begin_appt_time
-	end)
-	and
-	(case 
-		when i_end_appt_time is null then True
-		else appt_time < i_end_appt_time
-	end)
-	and
-	(case 
-		when i_site_name is null then True
-		else APPOINTMENT.site_name = i_site_name
-	end)
-	and
-	(case 
-		when i_is_available is null then True
-		when i_is_available = 0 then username is null
-		else username is not null
-	end);
+	where (i_begin_appt_date IS NULL OR i_begin_appt_date <= appt_date ) 
+		AND (i_end_appt_date IS NULL OR i_end_appt_date >= appt_date) 
+        AND (i_begin_appt_time IS NULL OR i_begin_appt_time <= appt_time) 
+        AND (i_end_appt_time IS NULL OR i_end_appt_time >= appt_time)
+        AND (i_site_name IS NULL OR i_site_name = APPOINTMENT.site_name)
+        AND (i_is_available IS NULL OR (i_is_available = 0 AND username IS NOT NULL) OR (i_is_available = 1 AND username IS NULL));
 
 -- End of solution
 END //
@@ -529,12 +583,14 @@ CREATE PROCEDURE create_testing_site(
 BEGIN
 -- Type solution below
 	INSERT INTO SITE(site_name, street, city, state, zip, location)
-    SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location
-    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username); 
+    SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location 
+    FROM DUAL
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username); 
 	
     INSERT INTO WORKING_AT(username, site)
-    SELECT i_site_name, i_first_tester_username
-    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username) AND NOT EXISTS(SELECT * FROM WORKING_AT WHERE WORKING_AT.username = i_first_tester_username);
+    SELECT i_first_tester_username, i_site_name
+    FROM DUAL
+    WHERE EXISTS(SELECT * FROM SITETESTER WHERE sitetester_username = i_first_tester_username);
 -- End of solution
 END //
 DELIMITER ;
@@ -556,8 +612,8 @@ BEGIN
 
     INSERT INTO pool_metadata_result
 -- Type solution below
-    SELECT pool_id, process_date, processed_by, pool_status
-    FROM POOL
+    SELECT pool_id, process_date, pool_status as pooled_result, concat(fname, ' ', lname) as processed_by 
+    FROM POOL left join USER on (USER.username = POOL.processed_by) 
     WHERE pool_id = i_pool_id;
 -- End of solution
 END //
@@ -600,7 +656,8 @@ BEGIN
     INSERT INTO tester_assigned_sites_result
 -- Type solution below
 
-    SELECT * FROM User;
+    SELECT site FROM working_at
+    where username = i_tester_username;
 
 -- End of solution
 END //
@@ -617,8 +674,8 @@ CREATE PROCEDURE assign_tester(
 )
 BEGIN
 -- Type solution below
-
-
+	insert into working_at values(
+    (i_tester_username, i_site_name));
 -- End of solution
 END //
 DELIMITER ;
@@ -635,8 +692,10 @@ CREATE PROCEDURE unassign_tester(
 )
 BEGIN
 -- Type solution below
-
-
+	if exists(select * from working_at where site = i_site_name and not username = i_tester_username) then
+    delete from working_at
+    where username = i_tester_username and site = i_site_name;
+    end if;
 -- End of solution
 END //
 DELIMITER ;
@@ -657,9 +716,10 @@ BEGIN
         pos_percent DECIMAL(6,2));
 	INSERT INTO daily_results_result
     -- Type solution below
-
-    SELECT * FROM User;
-
+	SELECT process_date, count(test_id), count(if(test_status like 'positive',1,null)), 100 * count(if(test_status like 'positive',1,null))/count(test_id)
+    FROM pool natural join test
+    group by process_date
+    having process_date is not null;
     -- End of solution
     END //
     DELIMITER ;
