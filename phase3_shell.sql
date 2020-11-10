@@ -459,9 +459,17 @@ CREATE PROCEDURE process_test(
 )
 BEGIN
 -- Type solution below
+	if i_test_status = 'positive' or i_test_status = 'negative' then
+    if exists(select * from test natural join pool where pool_status = 'positive') then 
 	update test
     set test_status = i_test_status
     where test_id = i_test_id;
+    else
+    update test
+    set test_status = 'negative'
+    where test_id = i_test_id;
+    end if;
+    end if;
 -- End of solution
 END //
 DELIMITER ;
@@ -660,8 +668,10 @@ CREATE PROCEDURE assign_tester(
 )
 BEGIN
 -- Type solution below
+	if not exists(select * from working_at where username = i_tester_username and site = i_site_name) then
 	insert into working_at values(
-    (i_tester_username, i_site_name));
+    i_tester_username, i_site_name);
+    end if;
 -- End of solution
 END //
 DELIMITER ;
