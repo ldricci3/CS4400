@@ -487,7 +487,7 @@ CREATE PROCEDURE process_test(
 )
 BEGIN
 -- Type solution below
-	if 'pending' in (select test_status from test where test_id = i_test_id) and i_test_status = 'positive' or i_test_status = 'negative'then
+	if 'pending' in (select test_status from test where test_id = i_test_id) and (i_test_status = 'positive' or i_test_status = 'negative') then
 		if exists(select * from test natural join pool where pool_status = 'positive' and pool_id in (select pool_id from test where test_id = i_test_id)) then 
 		update test
 		set test_status = i_test_status
