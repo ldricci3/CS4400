@@ -378,6 +378,15 @@ BEGIN
 			END) AND (CASE
 				WHEN i_begin_process_date IS NULL THEN TRUE
                 ELSE process_date >= i_begin_process_date OR process_date IS NULL
+			END) AND (CASE
+				WHEN ((i_processed_by IS NULL AND i_end_process_date IS NULL) AND (i_pool_status = "positive" OR i_pool_status = "negative" OR i_pool_status = "pending")) THEN pool_status = i_pool_status
+				ELSE TRUE
+            END) AND (CASE 
+				WHEN (i_pool_status = "positive" OR i_pool_status = "negative" OR i_pool_status = "pending") THEN pool_status = i_pool_status
+				ELSE TRUE
+            END) AND (CASE
+				WHEN (i_pool_status IS NOT NULL AND (i_pool_status != "positive" AND i_pool_status != "negative" AND i_pool_status != "pending")) THEN FALSE
+                ELSE TRUE
 			END)
 		GROUP BY pool.pool_id;
 
