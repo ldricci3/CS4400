@@ -405,7 +405,9 @@ CREATE PROCEDURE create_pool(
 )
 BEGIN
 -- Type solution below
-IF (SELECT pool_id FROM test WHERE test_id = i_test_id) IS NULL AND (SELECT pool_id FROM pool WHERE pool_id = i_pool_id) IS NULL THEN
+IF (SELECT pool_id FROM test WHERE test_id = i_test_id) IS NULL 
+AND (SELECT pool_id FROM pool WHERE pool_id = i_pool_id) IS NULL
+AND (SELECT test_id FROM test where test_id = i_test_id) IS NOT NULL THEN
 	INSERT INTO pool (pool_id, pool_status, process_date, processed_by) VALUES (i_pool_id, 'pending', NULL, NULL);
 	UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
 END IF;
