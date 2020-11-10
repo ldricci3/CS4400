@@ -358,14 +358,37 @@ BEGIN
     DROP TABLE IF EXISTS view_pools_result;
     CREATE TABLE view_pools_result(
         pool_id VARCHAR(10),
-        pool_status VARCHAR(20),
-        process_date DATE,
-        processed_by VARCHAR(40));
+        test_ids VARCHAR(100),
+        date_processed DATE,
+        processed_by VARCHAR(40),
+        pool_status VARCHAR(20));
 
     INSERT INTO view_pools_result
 -- Type solution below
 
-    SELECT * FROM User;
+        SELECT pool.pool_id, GROUP_CONCAT(test.test_id), process_date AS date_processed, processed_by, pool_status
+        FROM pool JOIN test ON test.pool_id = pool.pool_id
+        WHERE
+			(CASE 
+				WHEN i_processed_by IS NULL THEN TRUE 
+				ELSE processed_by = i_processed_by AND pool_status != "pending"
+			END) AND (CASE
+				WHEN i_end_process_date IS NULL THEN TRUE
+				ELSE process_date <= i_end_process_date AND pool_status != "pending"
+			END) AND (CASE
+				WHEN i_begin_process_date IS NULL THEN TRUE
+				ELSE process_date >= i_begin_process_date OR process_date IS NULL
+			END) AND (CASE
+				WHEN ((i_processed_by IS NULL AND i_end_process_date IS NULL) AND (i_pool_status = "positive" OR i_pool_status = "negative" OR i_pool_status = "pending")) THEN pool_status = i_pool_status
+				ELSE TRUE
+			END) AND (CASE 
+				WHEN (i_pool_status = "positive" OR i_pool_status = "negative" OR i_pool_status = "pending") THEN pool_status = i_pool_status
+				ELSE TRUE
+			END) AND (CASE
+				WHEN (i_pool_status IS NOT NULL AND (i_pool_status != "positive" AND i_pool_status != "negative" AND i_pool_status != "pending")) THEN FALSE
+				ELSE TRUE
+			END)
+		GROUP BY pool.pool_id;
 
 -- End of solution
 END //
@@ -382,9 +405,12 @@ CREATE PROCEDURE create_pool(
 )
 BEGIN
 -- Type solution below
-INSERT INTO pool (pool_id, pool_status, process_date, processed_by) VALUES (i_pool_id, 'pending', NULL, NULL);
-UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
-
+IF (SELECT pool_id FROM test WHERE test_id = i_test_id) IS NULL 
+AND (SELECT pool_id FROM pool WHERE pool_id = i_pool_id) IS NULL
+AND (SELECT test_id FROM test where test_id = i_test_id) IS NOT NULL THEN
+	INSERT INTO pool (pool_id, pool_status, process_date, processed_by) VALUES (i_pool_id, 'pending', NULL, NULL);
+	UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
+END IF;
 -- End of solution
 END //
 DELIMITER ;
@@ -410,7 +436,9 @@ IF TESTVAL >= 7 THEN
 		SET MESSAGE_TEXT = 'There can be no more than 7 tests in a pool';
 END IF;
 
-UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
+IF (SELECT pool_id FROM test WHERE test_id = i_test_id) IS NULL THEN
+	UPDATE test SET pool_id = i_pool_id where test_id = i_test_id;
+END IF;
 
 -- End of solution
 END //
