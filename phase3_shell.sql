@@ -292,14 +292,28 @@ BEGIN
     DROP TABLE IF EXISTS view_pools_result;
     CREATE TABLE view_pools_result(
         pool_id VARCHAR(10),
-        pool_status VARCHAR(20),
-        process_date DATE,
-        processed_by VARCHAR(40));
+        test_ids VARCHAR(100),
+        date_processed DATE,
+        processed_by VARCHAR(40),
+        pool_status VARCHAR(20));
 
     INSERT INTO view_pools_result
 -- Type solution below
 
-    SELECT * FROM User;
+        SELECT pool.pool_id, GROUP_CONCAT(test.test_id), process_date AS date_processed, processed_by, pool_status
+        FROM pool JOIN test ON test.pool_id = pool.pool_id
+        WHERE
+			(CASE 
+				WHEN i_processed_by IS NULL THEN TRUE 
+                ELSE processed_by = i_processed_by AND pool_status != "pending"
+            END) AND (CASE
+				WHEN i_end_process_date IS NULL THEN TRUE
+                ELSE process_date <= i_end_process_date AND pool_status != "pending"
+			END) AND (CASE
+				WHEN i_begin_process_date IS NULL THEN TRUE
+                ELSE process_date >= i_begin_process_date OR process_date IS NULL
+			END)
+		GROUP BY pool.pool_id;
 
 -- End of solution
 END //
