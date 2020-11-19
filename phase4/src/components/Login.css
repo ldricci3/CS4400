@@ -1,0 +1,8 @@
+.loginTitle {
+    text-align: center;
+}
+
+.loginButtonContainer {
+    display: flex;
+    justify-content: center;
+}
