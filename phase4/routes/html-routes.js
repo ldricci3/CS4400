@@ -135,6 +135,7 @@ const assign_test_to_pool = function(app, connection) {
         });
     });
 };
+
 const process_pool = function(app, connection) {
     app.get("/process_pool", function(req, res) {
         query = decodeURI(req._parsedUrl.query);
@@ -155,6 +156,120 @@ const process_test = function(app, connection) {
     });
 };
 
+const create_appointment = function(app, connection) {
+    app.get("/create_appointment", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.create_appointment(${query_args[0]},${query_args[1]},${query_args[2]})`, function(err, data) {
+            (err)?res.send(err):res.json({"Success":true});
+        });
+    });
+};
+
+const view_appointments = function(app, connection) {
+    app.get("/view_appointments", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.view_appointments(${query_args[0]},${query_args[1]},${query_args[2]},${query_args[3]},${query_args[4]},${query_args[5]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.view_appointments_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const view_testers = function(app, connection) {
+    app.get("/view_testers", function(req, res) {
+        connection.query(`CALL covidtest_fall2020.view_testers()`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.view_testers_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const create_testing_site = function(app, connection) {
+    app.get("/create_testing_site", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.create_testing_site(${query_args[0]},${query_args[1]},${query_args[2]},${query_args[3]},${query_args[4]},${query_args[5]},${query_args[6]})`, function(err, data) {
+            (err)?res.send(err):res.json({"Success":true});
+        });
+    });
+};
+
+const pool_metadata = function(app, connection) {
+    app.get("/pool_metadata", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.pool_metadata(${query_args[0]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.pool_metadata_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const tests_in_pool = function(app, connection) {
+    app.get("/tests_in_pool", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.tests_in_pool(${query_args[0]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.tests_in_pool_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const tester_assigned_sites = function(app, connection) {
+    app.get("/tester_assigned_sites", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.tester_assigned_sites(${query_args[0]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.tester_assigned_sites_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const assign_tester = function(app, connection) {
+    app.get("/assign_tester", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.assign_tester(${query_args[0]},${query_args[1]})`, function(err, data) {
+            (err)?res.send(err):res.json({"Success":true});
+        });
+    });
+};
+
+const unassign_tester = function(app, connection) {
+    app.get("/unassign_tester", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.unassign_tester(${query_args[0]},${query_args[1]})`, function(err, data) {
+            (err)?res.send(err):res.json({"Success":true});
+        });
+    });
+};
+
+const daily_results = function(app, connection) {
+    app.get("/daily_results", function(req, res) {
+        connection.query(`CALL covidtest_fall2020.daily_results()`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.daily_results_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
 module.exports = function(app, connection) {
     test(app, connection);
     register_student(app, connection);
@@ -170,4 +285,14 @@ module.exports = function(app, connection) {
     assign_test_to_pool(app, connection);
     process_pool(app, connection);
     process_test(app, connection);
+    create_appointment(app, connection);
+    view_appointments(app, connection);
+    view_testers(app, connection);
+    create_testing_site(app, connection);
+    pool_metadata(app, connection);
+    tests_in_pool(app, connection);
+    tester_assigned_sites(app, connection);
+    assign_tester(app, connection);
+    unassign_tester(app, connection);
+    daily_results(app, connection);
 };
