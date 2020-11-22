@@ -66,7 +66,7 @@ class Login extends React.Component<loginProps, loginState> {
 
         if (this.props.user.username !== defaultUser.username) {
             return (
-                <Redirect to="/example" />
+                <Redirect to="/home" />
             )
         }
 

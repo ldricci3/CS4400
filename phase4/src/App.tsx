@@ -2,6 +2,7 @@ import React from 'react';
 import SQLTest from './components/SQLTest.js';
 import './App.css';
 import Login from './components/Login';
+import Home from './components/Home';
 import Register from './components/Register';
 import Example from './components/Example';
 import Grid from '@material-ui/core/Grid'
@@ -47,6 +48,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/example">
                   <Example user={user}/>
+                </Route>
+                <Route path="/home">
+                  <Home user={user}/>
                 </Route>
                 <Route path="/test">
                   <SQLTest/>
