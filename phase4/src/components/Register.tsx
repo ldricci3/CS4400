@@ -105,7 +105,7 @@ class Register extends React.Component<registerProps, registerState> {
 
         if (this.props.user.username !== defaultUser.username) {
             return (
-                <Redirect to="/example" />
+                <Redirect to="/home" />
             )
         }
 
