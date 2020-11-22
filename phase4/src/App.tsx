@@ -3,6 +3,7 @@ import SQLTest from './components/SQLTest.js';
 import './App.css';
 import Login from './components/Login';
 import Register from './components/Register';
+import Example from './components/Example';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 
@@ -25,6 +26,9 @@ function App() {
                 </Route>
                 <Route path="/register">
                     <Register/>
+                </Route>
+                <Route path="/example">
+                    <Example/>
                 </Route>
                 <Route path="/test">
                     <SQLTest/>
