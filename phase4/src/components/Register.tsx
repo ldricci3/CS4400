@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {user, userType} from '../utils';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button'
@@ -267,7 +268,7 @@ type registerState = {
 }
 
 type registerProps = {
-
+    user: user
 }
 
 export default Register;

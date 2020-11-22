@@ -274,7 +274,7 @@ const get_user = function(app, connection) {
     app.get("/get_user", function(req, res) {
         query = decodeURI(req._parsedUrl.query);
         query_args = query.split(',');
-        connection.query(`SELECT * FROM covidtest_fall2020.user LEFT JOIN covidtest_fall2020.administrator ON username = admin_username LEFT JOIN covidtest_fall2020.employee ON username = emp_username LEFT JOIN covidtest_fall2020.sitetester ON username = sitetester_username LEFT JOIN covidtest_fall2020.student ON username = student_username WHERE user.username = ${query_args[0]} AND user.user_password = MD5(${query_args[1]});`, function(err, data) {
+        connection.query(`SELECT * FROM covidtest_fall2020.user LEFT JOIN covidtest_fall2020.administrator ON username = admin_username LEFT JOIN covidtest_fall2020.employee ON username = emp_username LEFT JOIN covidtest_fall2020.sitetester ON username = sitetester_username LEFT JOIN covidtest_fall2020.labtech ON username = labtech_username LEFT JOIN covidtest_fall2020.student ON username = student_username WHERE user.username = ${query_args[0]} AND user.user_password = MD5(${query_args[1]});`, function(err, data) {
                     (err)?res.send(err):res.json({result: data})
         });
     });
