@@ -57,7 +57,7 @@ class Register extends React.Component<registerProps, registerState> {
         if (tab === 0) {
             path = `http://localhost:8080/register_student?'${username}','${email}','${firstname}','${lastname}','${location}','${housingType}','${password}'`;
         } else {
-            path = `http://localhost:8080/register_student?'${username}','${email}','${firstname}','${lastname}','${phoneNumber}','${isLabTech}','${isSiteTester}','${password}'`;
+            path = `http://localhost:8080/register_employee?'${username}','${email}','${firstname}','${lastname}','${phoneNumber}','${isLabTech}','${isSiteTester}','${password}'`;
         }
 
         fetch(path).then(res => res.json())
