@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {user, userType} from '../utils';
+import { Link, Redirect } from 'react-router-dom';
+import {user, userType, defaultUser} from '../utils';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button'
@@ -39,7 +39,7 @@ class Register extends React.Component<registerProps, registerState> {
         }
     }
 
-    render() {
+    registerUser = () => {
         const {username, 
             email, 
             firstname, 
@@ -52,8 +52,70 @@ class Register extends React.Component<registerProps, registerState> {
             phoneNumber,
             isSiteTester,
             isLabTech } = this.state;
+            
+        let path: string;
+        if (tab === 0) {
+            path = `http://localhost:8080/register_student?'${username}','${email}','${firstname}','${lastname}','${location}','${housingType}','${password}'`;
+        } else {
+            path = `http://localhost:8080/register_student?'${username}','${email}','${firstname}','${lastname}','${phoneNumber}','${isLabTech}','${isSiteTester}','${password}'`;
+        }
 
-        const differentPasswords = confirmPassword.length > 0 && password !== confirmPassword
+        fetch(path).then(res => res.json())
+            .then((result) => {
+                console.log(result);
+
+                if ('code' in result) {
+                    this.setState({error: result.sqlMessage});
+                    return;
+                }
+
+                const newUser: user = {
+                    username: username,
+                    email: email,
+                    firstName: firstname,
+                    lastName: lastname,
+                    role: tab === 0 ? userType.STUDENT : userType.EMPLOYEE,
+                    isSiteTester: isSiteTester,
+                    isLabTech: isLabTech
+                }
+
+                this.props.setActiveUser(newUser);
+            })
+            .catch((error) => {
+                console.log(error);
+
+                this.setState({error: error});
+            })
+    }
+
+    render() {
+        const { error,
+            username, 
+            email, 
+            firstname, 
+            lastname, 
+            password, 
+            confirmPassword, 
+            tab,
+            housingType,
+            location,
+            phoneNumber,
+            isSiteTester,
+            isLabTech } = this.state;
+
+        if (this.props.user.username !== defaultUser.username) {
+            return (
+                <Redirect to="/example" />
+            )
+        }
+
+        const differentPasswords = confirmPassword.length > 0 && password !== confirmPassword;
+        const validEmail: boolean = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+
+        const canRegister = username.length > 0 && validEmail && firstname.length > 0 && lastname.length > 0 && password.length > 0 && password === confirmPassword && //user general stuff 
+        ((tab === 0 && housingType !== '' && location !== '' && phoneNumber === '' && !isSiteTester && !isLabTech) || //requirements for students
+        (tab === 1 && housingType === '' && location === '' && phoneNumber.length === 10 && /^\d+$/.test(phoneNumber) && (isSiteTester || isLabTech))) //requirements for employees
+        
 
         return (
             <Grid container justify={'center'} spacing={3}>
@@ -84,6 +146,8 @@ class Register extends React.Component<registerProps, registerState> {
                             label="Email"
                             value={email}
                             onChange={(event) => this.setState({email: event.target.value})}
+                            helperText = {email.length > 0 && !validEmail ? "Invalid Email Format" : ""}
+                            error = {email.length > 0 && !validEmail}
                             />
                     </Grid>
                     <Grid item xs={6}>
@@ -164,6 +228,7 @@ class Register extends React.Component<registerProps, registerState> {
                                         required
                                         value={housingType}
                                         onChange={(event) => this.setState({housingType: `${event.target.value}`})}>
+                                        <MenuItem value={""}>None</MenuItem>
                                         <MenuItem value={"Greek Housing"}>Greek Housing</MenuItem>
                                         <MenuItem value={"Student Housing"}>Student Housing</MenuItem>
                                         <MenuItem value={"Off-campus Apartment"}>Off-campus Apartment</MenuItem>
@@ -178,6 +243,7 @@ class Register extends React.Component<registerProps, registerState> {
                                         required
                                         value={location}
                                         onChange={(event) => this.setState({location: `${event.target.value}`})}>
+                                        <MenuItem value={""}>None</MenuItem>
                                         <MenuItem value={"East"}>East</MenuItem>
                                         <MenuItem value={"West"}>West</MenuItem>
                                     </Select>
@@ -221,10 +287,6 @@ class Register extends React.Component<registerProps, registerState> {
                                     label="Lab Tech"/>
                                 </FormGroup>
                             </FormControl>
-                            <FormGroup>
-
-                            </FormGroup>
-
                         </Grid>
                     </Grid>
                     }
@@ -240,11 +302,12 @@ class Register extends React.Component<registerProps, registerState> {
                         </Link>
                     </Grid>
                     <Grid item xs={6} className={'registerButtonContainer'}>
-                        <Button variant="contained" color="primary">
+                        <Button variant="contained" color="primary" disabled={!canRegister} onClick={this.registerUser}>
                             Register
                         </Button>
                     </Grid>
                 </Grid>
+                {error && <p>{error}</p>}
             </Grid>
         );
     }
@@ -268,7 +331,8 @@ type registerState = {
 }
 
 type registerProps = {
-    user: user
+    user: user,
+    setActiveUser: (newUser: user) => void
 }
 
 export default Register;

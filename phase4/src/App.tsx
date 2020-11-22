@@ -43,7 +43,7 @@ class App extends React.Component<appProps, appState> {
                   <Login user={user} setActiveUser={this.setActiveUser}/>
                 </Route>
                 <Route path="/register">
-                  <Register user={user} />
+                  <Register user={user} setActiveUser={this.setActiveUser}/>
                 </Route>
                 <Route path="/example">
                   <Example user={user}/>
