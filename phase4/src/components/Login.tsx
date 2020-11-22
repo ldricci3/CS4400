@@ -20,7 +20,7 @@ class Login extends React.Component<loginProps, loginState> {
         return (
             <Grid container justify={'center'} spacing={3}>
                 <Grid item xs={12}>
-                    <h1 className={'loginTitle'}>GT COVID-19 Testing</h1>
+                    <h1 className={'pageTitle'}>GT COVID-19 Testing</h1>
                 </Grid>
                 <Grid item xs={8}>
                     <TextField
@@ -29,7 +29,6 @@ class Login extends React.Component<loginProps, loginState> {
                         fullWidth
                         id="login-username-input"
                         label="Username"
-                        autoComplete="current-password"
                         />
                     <TextField
                         variant="outlined"
@@ -38,6 +37,7 @@ class Login extends React.Component<loginProps, loginState> {
                         id="login-password-input"
                         label="Password"
                         type="password"
+                        autoComplete="current-password"
                         />
                 </Grid>
                 <Grid item container xs={8}>
@@ -47,12 +47,14 @@ class Login extends React.Component<loginProps, loginState> {
                         </Button>
                     </Grid>
                     <Grid item xs={6} className={'loginButtonContainer'}>
-                        <Button variant="contained" color="primary">
-                            Register
-                        </Button>
+                        <Link to="/register">
+                            <Button variant="contained" color="primary">
+                                Register
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
-                {/* <Link to="/test">Test</Link>    */}
+                   
             </Grid> 
         )
     }

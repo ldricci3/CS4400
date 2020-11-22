@@ -2,6 +2,7 @@ import React from 'react';
 import SQLTest from './components/SQLTest.js';
 import './App.css';
 import Login from './components/Login';
+import Register from './components/Register';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 
@@ -10,6 +11,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                     <Login />
+                </Route>
+                <Route path="/register">
+                    <Register/>
                 </Route>
                 <Route path="/test">
                     <SQLTest/>

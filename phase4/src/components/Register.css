@@ -1,0 +1,17 @@
+.registerButtonContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.registerTabs {
+    width: inherit;
+}
+
+.formControl {
+    min-width: 190px;
+    padding: 1em;
+}
+
+.dropdownFormsContainer {
+    margin: 1em !important;
+}

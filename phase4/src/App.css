@@ -8,3 +8,7 @@
   background-color: lightgrey;
   min-height: 1000px;
 }
+
+.pageTitle {
+  text-align: center;
+}
