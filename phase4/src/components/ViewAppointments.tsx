@@ -14,20 +14,18 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
     constructor(props: viewAppointmentsProps) {
         super(props);
 
-        this.state = this.startingState;
-    }
-
-    startingState: viewAppointmentsState = {
-        loading: false,
-        error: '',
-        testing_site: '',
-        availability: 'ALL',
-        start_date: new Date(0),
-        end_date: new Date(0),
-        start_time: '',
-        end_time: '',
-        testing_sites: [],
-        appointments: []
+        this.state = {
+            loading: false,
+            error: '',
+            testing_site: 'ALL',
+            availability: 'ALL',
+            start_date: new Date(0),
+            end_date: new Date(0),
+            start_time: '',
+            end_time: '',
+            testing_sites: [],
+            appointments: []
+        };
     }
 
     componentDidMount() {
@@ -42,7 +40,6 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
-                console.log(result);
                 this.setState({testing_sites: result.result})
             })
             .catch((error) => {
@@ -68,13 +65,19 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
         const start_time_string = start_time ? `'${start_time}:00'` : null;
         const end_time_string = end_time ? `'${end_time}:00'` : null;
 
-        const path = `http://localhost:8080/view_appointments?${testing_site || null},${start_date_string},${end_date_string},${start_time_string},${end_time_string},${is_available},`;
+        const path = `http://localhost:8080/view_appointments?${testing_site === 'ALL' ? null : `'${testing_site}'`},${start_date_string},${end_date_string},${start_time_string},${end_time_string},${is_available},`;
     
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
-                console.log(result);
-                this.setState({appointments: result.result})
+                let temp: appointment[] = [];
+                result.result.forEach((e: any) => {
+                    let apt: appointment = e;
+                    apt.appt_date = apt.appt_date.substring(0,10);
+                    apt.username = e.username === null ? '' : e.username + '';
+                    temp.push(apt);
+                })
+                this.setState({appointments: temp})
             })
             .catch((error) => {
                 console.log(error);
@@ -94,44 +97,40 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
             testing_site,
             appointments } = this.state;
 
-        console.log(this.state);
-
         const empty_date = new Date(0);
 
-        // if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
-        //     return (<Redirect to={'/home'}></Redirect>)
-        // }
+        /**
+         * Redirects the user to the home page if they do not have permissions to be on the page
+         */
+        if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+            return (<Redirect to={'/home'}></Redirect>)
+        }
 
         const data = {
             columns: [
                 {
                     label: 'Date',
                     field: 'appt_date',
-                    sort: 'asc',
                     width: 150
                 },
                 {
                     label: 'Time',
                     field: 'appt_time',
-                    sort: 'asc',
                     width: 150
                 },
                 {
                     label: 'Test Site',
                     field: 'site_name',
-                    sort: 'asc',
                     width: 150
                 },
                 {
                     label: 'Location',
                     field: 'location',
-                    sort: 'asc',
                     width: 150
                 },
                 {
                     label: 'User',
                     field: 'username',
-                    sort: 'asc',
                     width: 150
                 }
             ],
@@ -143,15 +142,15 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                 <Grid item xs={12}>
                     <h1 className={'pageTitle'}>View Appointments</h1>
                 </Grid>
-                <Grid container item xs={12} spacing={3}>
-                    <Grid item xs={4}>
+                <Grid container item xs={10} justify={'space-between'}>
+                    <Grid item>
                         <FormLabel component="legend">Test Site</FormLabel>
                         <Select
                             labelId="location-label"
                             required
                             value={testing_site}
                             onChange={(event) => this.setState({testing_site: `${event.target.value}`})}>
-                                <MenuItem value={""}>All</MenuItem>
+                                <MenuItem value={"ALL"}>All</MenuItem>
                                 {testing_sites.map((site: testingSite) => (
                                     <MenuItem value={site.site_name} key={site.site_name}>{site.site_name}</MenuItem>
                                 ))}
@@ -167,7 +166,7 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                                 <MenuItem value={"BOOKED"}>Show Booked Only</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item xs={4} justify={'center'}>
+                    <Grid item>
                         <FormLabel component="legend">Start Date</FormLabel>
                         <form noValidate>
                             <TextField
@@ -193,7 +192,7 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                             />
                         </form>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item>
                         <FormLabel component="legend">Start Time</FormLabel>
                         <form noValidate>
                             <TextField
@@ -225,6 +224,7 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                     <MDBDataTable
                         striped
                         bordered
+                        sortable={true}
                         small
                         data={data}
                         />
@@ -239,14 +239,21 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                     </Grid>
                     <Grid item xs={2}>
                         <Button variant="contained" color="primary" onClick={() => {
-                            this.setState(this.startingState);
-                            this.loadAppointments();
+                            this.setState({
+                                testing_site: 'ALL',
+                                availability: 'ALL',
+                                start_date: new Date(0),
+                                end_date: new Date(0),
+                                start_time: '',
+                                end_time: ''
+                            }, () => this.loadAppointments());
+                            
                         }}>
                             Reset
                         </Button>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="contained" color="primary" onClick={this.loadAppointments}>
+                        <Button variant="contained" color="primary" onClick={() => this.loadAppointments()}>
                             Filter
                         </Button>
                     </Grid>
