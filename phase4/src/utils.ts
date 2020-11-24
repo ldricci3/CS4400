@@ -23,3 +23,12 @@ export const defaultUser: user = {
     isLabTech: false,
     isSiteTester: true
 }
+
+export type testingSite = {
+    site_name: string,
+    street: string,
+    city: string, 
+    state: string,
+    zip: string,
+    location: string
+}

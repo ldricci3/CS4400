@@ -278,7 +278,17 @@ const get_user = function(app, connection) {
                     (err)?res.send(err):res.json({result: data})
         });
     });
-}; 
+};
+
+const get_testing_sites = function(app, connection) {
+    app.get("/get_testing_sites", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`SELECT * FROM covidtest_fall2020.site;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+        });
+    });
+};
 
 module.exports = function(app, connection) {
     test(app, connection);
@@ -306,4 +316,5 @@ module.exports = function(app, connection) {
     unassign_tester(app, connection);
     daily_results(app, connection);
     get_user(app, connection);
+    get_testing_sites(app, connection);
 };
