@@ -66,9 +66,9 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
         /**
          * Redirects the user to the home page if they do not have permissions to be on the page
          */
-        if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
-            return (<Redirect to={'/home'}></Redirect>)
-        }
+        // if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+        //     return (<Redirect to={'/home'}></Redirect>)
+        // }
 
         const data = {
             columns: [
