@@ -46,7 +46,7 @@ class Home extends React.Component<homeProps, homeState> {
                             </Grid>
     
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/testSignUp">
                                     <Button variant="contained" color="primary">
                                         Sign Up for a Test!
                                     </Button>
@@ -181,7 +181,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/viewAppointments">
                                         <Button variant="contained" color="primary">
                                             View Appointments
                                         </Button>
@@ -286,7 +286,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/viewAppointments">
                                         <Button variant="contained" color="primary">
                                             View Appointments
                                         </Button>
@@ -347,7 +347,7 @@ class Home extends React.Component<homeProps, homeState> {
                             </Grid>
     
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/testSignUp">
                                     <Button variant="contained" color="primary">
                                         Sign Up for a Test!
                                     </Button>

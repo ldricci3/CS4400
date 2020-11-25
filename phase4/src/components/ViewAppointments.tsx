@@ -258,6 +258,7 @@ class ViewAppointments extends React.Component<viewAppointmentsProps, viewAppoin
                         </Button>
                     </Grid>
                 </Grid>
+                {error ?? <p className={'error'}>{error}</p>}
             </Grid>
         );
     }
