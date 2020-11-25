@@ -37,8 +37,6 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
 
         const path = `http://localhost:8080/tests_processed?${start_date_string},${end_date_string},${test_status === 'ALL' ? null : `'${test_status}'`},'${this.props.user.username}'`;
 
-        console.log(path)
-
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
