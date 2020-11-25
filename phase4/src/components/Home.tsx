@@ -59,7 +59,7 @@ class Home extends React.Component<homeProps, homeState> {
                             </Grid>
     
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/viewdailyresults">
                                     <Button variant="contained" color="primary">
                                         View Daily Results
                                     </Button>
@@ -118,7 +118,7 @@ class Home extends React.Component<homeProps, homeState> {
                             </Grid>
     
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/viewdailyresults">
                                     <Button variant="contained" color="primary">
                                         View Daily Results
                                     </Button>
@@ -200,7 +200,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/viewdailyresults">
                                         <Button variant="contained" color="primary">
                                             View Daily Results
                                         </Button>
@@ -260,7 +260,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/viewdailyresults">
                                         <Button variant="contained" color="primary">
                                             View Daily Results
                                         </Button>
@@ -305,7 +305,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/viewdailyresults">
                                         <Button variant="contained" color="primary">
                                             View Daily Results
                                         </Button>
@@ -360,7 +360,7 @@ class Home extends React.Component<homeProps, homeState> {
                             </Grid>
     
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/viewdailyresults">
                                     <Button variant="contained" color="primary">
                                         View Daily Results
                                     </Button>
