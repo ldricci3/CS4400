@@ -14,6 +14,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Example from './components/Example';
 import ViewAppointments from './components/ViewAppointments';
+import ViewTestResults from './components/ViewTestResults';
 
 
 class App extends React.Component<appProps, appState> {
@@ -54,6 +55,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/viewAppointments">
                   <ViewAppointments user={user}/>
+                </Route>
+                <Route path="/viewTestResults">
+                  <ViewTestResults user={user}/>
                 </Route>
                 <Route path="/test">
                   <SQLTest/>
