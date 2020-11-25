@@ -27,13 +27,14 @@ class App extends React.Component<appProps, appState> {
     super(props);
 
     this.state = {
-      user: defaultUser
+      user: defaultUser,
     }
   }
 
   setActiveUser = (newUser: user) => {
     this.setState({user: newUser})
   }
+
 
   render() {
     const { user } = this.state;

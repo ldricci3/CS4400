@@ -219,7 +219,7 @@ type testResults = {
 }
 
 type viewTestResultsProps = {
-    user: user
+    user: user,
 }
 
 export default ViewTestResults;

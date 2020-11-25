@@ -14,6 +14,10 @@ export type user = {
     isSiteTester: boolean
 }
 
+export type covidtest = {
+    test_id: number
+}
+
 export const defaultUser: user = {
     username: '',
     email: '',
@@ -22,6 +26,10 @@ export const defaultUser: user = {
     role: userType.ADMIN,
     isLabTech: false,
     isSiteTester: true
+}
+
+export const defaultTest: covidtest = {
+    test_id: 100001
 }
 
 export type testingSite = {
