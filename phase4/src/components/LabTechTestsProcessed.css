@@ -1,0 +1,7 @@
+.filterContainer {
+    display: flex;
+}
+
+.filterLabel {
+    margin-right: 1em;
+}
