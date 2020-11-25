@@ -35,7 +35,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
         const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
-        const path = `http://localhost:8080/tests_processed?,${start_date_string},${end_date_string},${test_status === 'ALL' ? null : `'${test_status}'`},'${this.props.user.username}'`;
+        const path = `http://localhost:8080/tests_processed?${start_date_string},${end_date_string},${test_status === 'ALL' ? null : `'${test_status}'`},'${this.props.user.username}'`;
 
         fetch(path)
             .then((res) => res.json())
@@ -66,9 +66,9 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
         /**
          * Redirects the user to the home page if they do not have permissions to be on the page
          */
-        if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
-            return (<Redirect to={'/home'}></Redirect>)
-        }
+        // if (this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+        //     return (<Redirect to={'/home'}></Redirect>)
+        // }
 
         const data = {
             columns: [
@@ -180,6 +180,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                         </Button>
                     </Grid>
                 </Grid>
+                {error ?? <p className={'error'}>{error}</p>}
             </Grid>
         );
     }

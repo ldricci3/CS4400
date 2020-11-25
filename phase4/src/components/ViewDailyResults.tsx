@@ -26,11 +26,15 @@ class ViewDailyResults extends React.Component<viewDailyResultsProps, viewDailyR
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
+                console.log(result);
                 let temp: dailyResult[] = [];
                 result.result.forEach((e: any) => {
-                    let dr: dailyResult = e;
-                    dr.result_date = dr.result_date.substring(0,10);
-                    dr.positive_percent = e.positive_percent + '%';
+                    let dr: dailyResult = {
+                        result_date: e.process_date.substring(0,10),
+                        tests_processed: parseInt(e.num_tests),
+                        positive_count: parseInt(e.pos_tests),
+                        positive_percent: e.pos_percent + '%'
+                    }
                     temp.push(dr);
                 })
                 this.setState({dailyResults: temp})
