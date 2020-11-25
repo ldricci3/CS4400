@@ -14,7 +14,9 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Example from './components/Example';
 import ViewAppointments from './components/ViewAppointments';
+import ViewTestResults from './components/ViewTestResults';
 import ViewDailyResults from './components/ViewDailyResults';
+import SignUpForTest from './components/SignUpForTest';
 
 
 class App extends React.Component<appProps, appState> {
@@ -56,6 +58,12 @@ class App extends React.Component<appProps, appState> {
                 <Route path="/viewAppointments">
                   <ViewAppointments user={user}/>
                 </Route>
+                <Route path="/testSignUp">
+                  <SignUpForTest user={user}/>
+                </Route>
+                <Route path="/viewTestResults">
+                  <ViewTestResults user={user}/>
+                </Route>
                 <Route path="/viewdailyresults">
                    <ViewDailyResults user={user}/>
                 </Route>
@@ -70,6 +78,7 @@ class App extends React.Component<appProps, appState> {
     );
   }
 }
+
 
 type appProps = {
 
