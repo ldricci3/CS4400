@@ -290,6 +290,16 @@ const get_testing_sites = function(app, connection) {
     });
 };
 
+const get_locations = function(app, connection) {
+    app.get("/get_locations", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`SELECT * FROM covidtest_fall2020.location;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+        });
+    });
+};
+
 const get_max_test_id = function(app, connection) {
     app.get("/get_max_test_id", function(req, res) {
         query = decodeURI(req._parsedUrl.query);
@@ -327,5 +337,6 @@ module.exports = function(app, connection) {
     daily_results(app, connection);
     get_user(app, connection);
     get_testing_sites(app, connection);
+    get_locations(app, connection);
     get_max_test_id(app, connection);
 };
