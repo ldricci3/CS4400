@@ -180,6 +180,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                         </Button>
                     </Grid>
                 </Grid>
+                {error ?? <p className={'error'}>{error}</p>}
             </Grid>
         );
     }

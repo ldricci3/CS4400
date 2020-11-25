@@ -163,7 +163,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/labtechtestsprocessed">
+                                    <Link to="/labTechTestsProcessed">
                                         <Button variant="contained" color="primary">
                                             View My Processed Tests
                                         </Button>
@@ -245,7 +245,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/labtechtestsprocessed">
+                                    <Link to="/labTechTestsProcessed">
                                         <Button variant="contained" color="primary">
                                             View My Processed Tests
                                         </Button>

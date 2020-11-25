@@ -13,6 +13,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import Register from './components/Register';
 import Example from './components/Example';
+import LabTechTestsProcessed from './components/LabTechTestsProcessed';
 import ViewAppointments from './components/ViewAppointments';
 import ViewTestResults from './components/ViewTestResults';
 import ViewDailyResults from './components/ViewDailyResults';
@@ -54,6 +55,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/home">
                   <Home user={user}/>
+                </Route>
+                <Route path="/labTechTestsProcessed">
+                  <LabTechTestsProcessed user={user}/>
                 </Route>
                 <Route path="/viewAppointments">
                   <ViewAppointments user={user}/>
