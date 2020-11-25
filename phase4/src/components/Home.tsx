@@ -20,6 +20,11 @@ class Home extends React.Component<homeProps, homeState> {
         const {
             loading,
             error } = this.state;
+
+            if (this.props.user.username === defaultUser.username) {
+                return (<Redirect to="/"></Redirect>)
+            }
+
             if (this.props.user.role === userType.STUDENT) {
                 return (
                     <Grid container justify={'center'} spacing={3}>

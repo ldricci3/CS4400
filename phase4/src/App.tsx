@@ -60,6 +60,7 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/testSignUp">
                   <SignUpForTest user={user}/>
+                </Route>
                 <Route path="/viewTestResults">
                   <ViewTestResults user={user}/>
                 </Route>
