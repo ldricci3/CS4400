@@ -26,7 +26,7 @@ class ViewDailyResults extends React.Component<viewDailyResultsProps, viewDailyR
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
-                console.log(result);
+                console.log(result.result);
                 let temp: dailyResult[] = [];
                 result.result.forEach((e: any) => {
                     let dr: dailyResult = {

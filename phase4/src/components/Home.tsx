@@ -88,14 +88,14 @@ class Home extends React.Component<homeProps, homeState> {
                                 </Link>
                             </Grid>
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/createAppointment">
                                     <Button variant="contained" color="primary">
                                         Create Testing Site
                                     </Button>
                                 </Link>
                             </Grid>
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/example">
+                                <Link to="/createAppointment">
                                     <Button variant="contained" color="primary">
                                         Create Appointment
                                     </Button>
@@ -193,7 +193,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/createAppointment">
                                         <Button variant="contained" color="primary">
                                             Create Appointments
                                         </Button>
@@ -298,7 +298,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/createAppointment">
                                         <Button variant="contained" color="primary">
                                             Create Appointments
                                         </Button>
