@@ -35,22 +35,25 @@ class CreateAppointment extends React.Component<createAppointmentsProps, createA
         const adminPath = `http://localhost:8080/get_testing_sites`;
         const testerPath = `http://localhost:8080/view_testers`
         if (this.props.user.isSiteTester) {
-
-            let filter: string[] = [];
             fetch(testerPath)
             .then((res) => res.json())
             .then((result) => {
                 result.result.forEach((e: any) => {
                     let view: testerview = e;
                     if (view.username === this.props.user.username) {
-                         
+                        let jsonStart: string = '{"site_name": "';
+                        let jsonEnd: string = '", "street": "FILL","city":"FILL","state":"FILL","zip":"FILL","location":"FILL"}';
+                        
                         if (view.assigned_sites !== null) {
                             let temp: string[] = (view.assigned_sites).split(",");
                             console.log(temp);
+                            let temparray: testingSite[] = [];
                             temp.forEach((c: string) => {
-                                filter.push(c);
+                                let jsonString = jsonStart + c + jsonEnd;
+                                let jsonParse = JSON.parse(jsonString);
+                                temparray.push(jsonParse);
                             })
-                            this.setState({filter_array: filter});
+                            this.setState({testing_sites: temparray});
                         }
                     }
                 })
@@ -58,36 +61,7 @@ class CreateAppointment extends React.Component<createAppointmentsProps, createA
             .catch((error) => {
                 console.log(error);
             });
-
-            const{filter_array} = this.state;
-            console.log(filter_array[1]);
-            fetch(adminPath)
-            .then((res) => res.json())
-            .then((result) => {
-                console.log(result.result);
-                let temp: testingSite[] = [];
-                
-                
-                result.result.forEach((e: testingSite) => {
-                    let ts: testingSite = e;
-                    //The filter array is defined, but its elements are undefined
-                    console.log(filter.includes("Stamps Health Services"));
-
-                    console.log(ts.site_name);
-                    //As a result, this includes doesn't work :(
-                    if (filter.includes(ts.site_name)) {
-                        console.log("LOOPS")
-                        temp.push(ts);
-                    }
-                })
-                this.setState({testing_sites: temp});
-                console.log(temp);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-
+            
         } else {
             fetch(adminPath)
             .then((res) => res.json())
