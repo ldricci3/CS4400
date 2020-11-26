@@ -19,6 +19,7 @@ import ViewTestResults from './components/ViewTestResults';
 import ViewDailyResults from './components/ViewDailyResults';
 import SignUpForTest from './components/SignUpForTest';
 import AggregateTestResults from './components/AggregateTestResults';
+import TesterChangeSite from './components/TesterChangeSite';
 import CreateAppointment from './components/CreateAppointment';
 
 
@@ -76,6 +77,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/aggregateTestResults">
                    <AggregateTestResults user={user}/>
+                </Route>
+                <Route path="/testerChangeSite">
+                  <TesterChangeSite user={user}/>
                 </Route>
                 <Route path="/createAppointment">
                    <CreateAppointment user={user}/>
