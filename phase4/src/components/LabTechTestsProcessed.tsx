@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { MDBDataTable } from 'mdbreact';
+import { MDBDataTable, MDBNavLink } from 'mdbreact';
 
 class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, labTechTestsProcessedState> {
     constructor(props: labTechTestsProcessedProps) {
@@ -43,6 +43,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                 let temp: test[] = [];
                 result.result.forEach((e: any) => {
                     let temp_test: test = e;
+                    temp_test.pool_link = "/explore_pool_result?" + temp_test.pool_id;
                     temp.push(temp_test);
                 })
                 this.setState({tests: temp})
@@ -98,7 +99,15 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                     width: 150
                 }
             ],
-            rows: tests
+            rows: [...this.state.tests.map((data, i) => (
+                {
+                   test_id: data.test_id,
+                   pool_id: <a href={data.pool_link}>{data.pool_id}</a>,
+                   test_date: data.test_date,
+                   process_date: data.process_date,
+                   test_status: data.test_status
+                }
+            ))]
         }
 
         return (
@@ -198,6 +207,7 @@ type labTechTestsProcessedState = {
 type test = {
     test_id: string,
     pool_id: string,
+    pool_link: string,
     test_date: string,
     process_date: string,
     test_status: string
