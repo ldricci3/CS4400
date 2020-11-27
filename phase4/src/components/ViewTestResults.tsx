@@ -50,6 +50,7 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                     if (tr.date_processed !== null) {
                         tr.date_processed = tr.date_processed.substring(0,10);
                     }
+                    tr.test_link = "/exploreTestResult/?" + tr.test_id;
                     temp.push(tr);
                 })
                 this.setState({test_results: temp})
@@ -111,7 +112,15 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                     width: 150
                 }
             ],
-            rows: test_results
+            rows:  [...this.state.test_results.map((data, i) => (
+                {
+                   test_id: data.test_status === 'pending' ? data.test_id : <a href={data.test_link}>{data.test_id}</a>,
+                   timeslot_date: data.timeslot_date,
+                   date_processed: data.date_processed,
+                   pool_status: data.pool_status,
+                   test_status: data.test_status
+                }
+            ))]
         }
 
         return (
@@ -214,6 +223,7 @@ type testResults = {
     test_id: number,
     timeslot_date: string,
     date_processed: string,
+    test_link: string,
     pool_status: string,
     test_status: string
 }
