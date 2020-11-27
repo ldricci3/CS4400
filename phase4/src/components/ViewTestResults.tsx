@@ -114,7 +114,7 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
             ],
             rows:  [...this.state.test_results.map((data, i) => (
                 {
-                   test_id: data.test_status === 'pending' ? data.test_id : <a href={data.test_link}>{data.test_id}</a>,
+                   test_id: data.test_status === 'pending' ? data.test_id : <Link to = {data.test_link}> {data.test_id}</Link>,
                    timeslot_date: data.timeslot_date,
                    date_processed: data.date_processed,
                    pool_status: data.pool_status,

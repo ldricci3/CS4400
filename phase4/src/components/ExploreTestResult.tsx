@@ -124,6 +124,13 @@ class ExploreTestResult extends React.Component<ExploreTestResultProps, ExploreT
                 </Grid>
 
                 <Grid container item xs={10} spacing={2}>
+                    <Link to="/viewTestResults">
+                        <Button variant="contained" color="primary">
+                            Back to Test Results
+                        </Button>
+                    </Link>
+                </Grid>
+                <Grid container item xs={10} spacing={2}>
                     <Link to="/home">
                         <Button variant="contained" color="primary">
                             Back (Home)
