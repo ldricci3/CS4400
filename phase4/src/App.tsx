@@ -21,7 +21,7 @@ import SignUpForTest from './components/SignUpForTest';
 import AggregateTestResults from './components/AggregateTestResults';
 import TesterChangeSite from './components/TesterChangeSite';
 import CreateAppointment from './components/CreateAppointment';
-
+import ExplorePoolResult from './components/ExplorePoolResult';
 
 class App extends React.Component<appProps, appState> {
 
@@ -86,6 +86,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/test">
                   <SQLTest/>
+                </Route>
+                <Route path="/ExplorePoolResult/:poolID">
+                   <ExplorePoolResult user={user} />
                 </Route>
               </Switch>
             </Router>
