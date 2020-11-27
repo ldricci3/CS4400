@@ -43,7 +43,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                 let temp: test[] = [];
                 result.result.forEach((e: any) => {
                     let temp_test: test = e;
-                    temp_test.pool_link = "/explore_pool_result/?" + temp_test.pool_id;
+                    temp_test.pool_link = "/explore_pool_result?" + temp_test.pool_id;
                     temp.push(temp_test);
                 })
                 this.setState({tests: temp})
@@ -102,7 +102,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
             rows: [...this.state.tests.map((data, i) => (
                 {
                    test_id: data.test_id,
-                   pool_id: <a href={data.pool_link}>{data.pool_id}</a>,
+                   pool_id: <Link to = {data.pool_link} >{data.pool_id}</Link>,
                    test_date: data.test_date,
                    process_date: data.process_date,
                    test_status: data.test_status

@@ -102,7 +102,7 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
             ],
             rows: [...this.state.pools.map((data, i) => (
                 {
-                   pool_id: <a href={data.pool_link}>{data.pool_id}</a>,
+                   pool_id: <Link to = {data.pool_link} >{data.pool_id}</Link>,
                    test_ids: data.test_ids,
                    date_processed: data.date_processed,
                    processed_by: data.processed_by,
