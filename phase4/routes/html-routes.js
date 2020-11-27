@@ -312,6 +312,16 @@ const get_housing = function(app, connection) {
 
 
 
+const get_unpooled_tests = function(app, connection) {
+    app.get("/get_unpooled_tests", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`SELECT test_id, appt_date as 'date_tested' FROM covidtest_fall2020.test where pool_id is null;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+        });
+    });
+};
+
 const get_max_test_id = function(app, connection) {
     app.get("/get_max_test_id", function(req, res) {
         query = decodeURI(req._parsedUrl.query);
@@ -351,5 +361,6 @@ module.exports = function(app, connection) {
     get_testing_sites(app, connection);
     get_locations(app, connection);
     get_housing(app, connection);
+    get_unpooled_tests(app, connection);
     get_max_test_id(app, connection);
 };

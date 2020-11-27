@@ -24,6 +24,7 @@ import TesterChangeSite from './components/TesterChangeSite';
 import CreateAppointment from './components/CreateAppointment';
 import ExplorePoolResult from './components/ExplorePoolResult';
 import ExploreTestResult from './components/ExploreTestResult';
+import CreatePool from './components/CreatePool';
 
 class App extends React.Component<appProps, appState> {
 
@@ -97,6 +98,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/exploreTestResult">
                    <ExploreTestResult user={user} />
+                </Route>
+                <Route path="/createPool">
+                   <CreatePool user={user} />
                 </Route>
               </Switch>
             </Router>
