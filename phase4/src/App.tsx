@@ -15,6 +15,7 @@ import Register from './components/Register';
 import Example from './components/Example';
 import LabTechTestsProcessed from './components/LabTechTestsProcessed';
 import ViewAppointments from './components/ViewAppointments';
+import ViewPools from './components/ViewPools';
 import ViewTestResults from './components/ViewTestResults';
 import ViewDailyResults from './components/ViewDailyResults';
 import SignUpForTest from './components/SignUpForTest';
@@ -69,10 +70,13 @@ class App extends React.Component<appProps, appState> {
                 <Route path="/testSignUp">
                   <SignUpForTest user={user}/>
                 </Route>
+                <Route path="/viewPools">
+                   <ViewPools user={user}/>
+                </Route>
                 <Route path="/viewTestResults">
                   <ViewTestResults user={user}/>
                 </Route>
-                <Route path="/viewdailyresults">
+                <Route path="/viewDailyResults">
                    <ViewDailyResults user={user}/>
                 </Route>
                 <Route path="/aggregateTestResults">
