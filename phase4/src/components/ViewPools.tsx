@@ -80,34 +80,34 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
                 {
                     label: 'Pool ID',
                     field: 'pool_id',
-                    width: 150
+                    width: 80
                 },
                 {
                     label: 'Test Ids',
                     field: 'test_ids',
-                    width: 150
+                    width: 400
                 },
                 {
                     label: 'Date Processed',
                     field: 'date_processed',
-                    width: 150
+                    width: 110
                 },
                 {
                     label: 'Processed By',
                     field: 'processed_by',
-                    width: 150
+                    width: 130
                 },
                 {
                     label: 'Pool Status',
                     field: 'pool_status',
-                    width: 150
+                    width: 100,
                 }
             ],
             rows: [...this.state.pools.map((data, i) => (
                 {
-                   pool_id: <Link to = {data.pool_link} >{data.pool_id}</Link>,
+                   pool_id: <Link to = {data.pool_link} className={'poolIdLink'}>{data.pool_id}</Link>,
                    test_ids: data.test_ids,
-                   date_processed: data.date_processed,
+                   date_processed: data.date_processed != undefined ? data.date_processed.substring(0,10) : data.date_processed,
                    processed_by: data.processed_by,
                    pool_status: data.pool_status
                 }
@@ -173,6 +173,7 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
                 </Grid>
                 <Grid item xs={10}>
                     <MDBDataTable
+                        scrollX
                         striped
                         bordered
                         sortable={true}
