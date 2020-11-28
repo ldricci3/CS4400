@@ -11,14 +11,15 @@ import Button from '@material-ui/core/Button';
 import { MDBDataTable } from 'mdbreact';
 import { parse } from 'url';
 import Radio from '@material-ui/core/Radio';
+import Checkbox from '@material-ui/core/Checkbox';
 
 class CreatePool extends React.Component<createPoolProps, createPoolState> {
     constructor(props: createPoolProps) {
         super(props);
 
         this.state = {
-            //loading: false,
-            //error: '',
+            loading: false,
+            error: '',
             poolID: 0,
             tests: [],
             selectedTests: []
@@ -36,13 +37,18 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
             .then((res) => res.json())
             .then((result) => {
                 console.log(result.result);
-                let temp: test[] = [];
+                let temp0: test[] = [];
+                let temp1: boolean[] = [];
                 result.result.forEach((e: any) => {
                     let tr: test = e;
                     tr.date_tested = e.date_tested.substring(0,10);
-                    temp.push(tr);
+                    temp0.push(tr);
+                    temp1.push(false);
                 })
-                this.setState({tests: temp})
+                this.setState({
+                    tests: temp0,
+                    selectedTests: temp1
+                })
             })
             .catch((error) => {
                 console.log(error);
@@ -50,9 +56,13 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
     }
 
     createPool() {
-        const {poolID, selectedTests} = this.state;
+        const {poolID, tests, selectedTests} = this.state;
         let temp: number[] = [];
-        selectedTests.forEach(e => temp.push(e.test_id));
+        for (let i = 0; i < selectedTests.length; i++) {
+            if (selectedTests[i]) {
+                temp.push(tests[i].test_id);
+            }
+        }
         const path = `http://localhost:8080/create_pool?${poolID},${temp[0]}`;
 
         fetch(path).then((res) => res.json())
@@ -84,27 +94,25 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
     }
 
     render() {
-        const {
-            //loading,
-            //error,
-            poolID,
-            tests,
-            selectedTests } = this.state;
+        const { poolID, tests, selectedTests } = this.state;
 
         let rows: any[] = [];
-        let temp: test[] = [];
-        tests.forEach((t: test) => {
+        for(let i = 0; i < tests.length; i++) {
             rows.push({
-                test_id: t.test_id,
-                date_tested: t.date_tested,
-                radio: <Radio
-                    // this is the part that needs fixing.  must allow multiple checked boxes
-                    checked={selectedTests[0].test_id + selectedTests[0].date_tested === t.test_id + t.date_tested}
-                    onChange={(event) =>
-                    temp.push(t)}/>
+                test_id: tests[i].test_id,
+                date_tested: tests[i].date_tested,
+                radio: <Checkbox
+                            checked={selectedTests[i]}
+                            onChange={(event) => (selectedTests[i] = !selectedTests[i])}
+                            color="primary"
+                        />
+                // radio: <Radio
+                //     // this is the part that needs fixing.  must allow multiple checked boxes
+                //     checked={selectedTests[0].test_id + selectedTests[0].date_tested === t.test_id + t.date_tested}
+                //     onChange={(event) =>
+                //     temp.push(t)}/>
             })
-            this.setState({selectedTests: temp});
-        })
+        }
 
         const data = {
             columns: [
@@ -188,11 +196,11 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
 }
 
 type createPoolState = {
-    // loading: boolean,
-    // error: string,
+    loading: boolean,
+    error: string,
     poolID: number,
     tests: test[],
-    selectedTests: test[]
+    selectedTests: boolean[]
 }
 
 type test = {
