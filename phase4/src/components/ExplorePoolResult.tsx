@@ -12,7 +12,7 @@ class ExplorePoolResult extends React.Component<ExplorePoolResultProps, ExploreP
         this.state = {
             // loading: false,
             // error: '',
-            poolID: parseInt(window.location.href.substring(40)),
+            poolID: parseInt(window.location.href.substring(window.location.href.indexOf('?') + 1)),
             // poolResults: [],
             pool_data: [],
             tests: []
@@ -62,6 +62,7 @@ class ExplorePoolResult extends React.Component<ExplorePoolResultProps, ExploreP
                     tr.date_tested = tr.date_tested.substring(0,10);
                     temp.push(tr);
                 })
+                console.log(temp);
                 this.setState({tests: temp})
             })
             .catch((error) => {
@@ -130,18 +131,18 @@ class ExplorePoolResult extends React.Component<ExplorePoolResultProps, ExploreP
                     width: 150
                 },
                 {
-                    label: 'Tests Processed',
-                    field: 'tests_processed',
+                    label: 'Date Tested',
+                    field: 'date_tested',
                     width: 150
                 },
                 {
-                    label: 'Positive Count',
-                    field: 'positive_count',
+                    label: 'Testing Site',
+                    field: 'testing_site',
                     width: 150
                 },
                 {
-                    label: 'Positive Percent',
-                    field: 'positive_percent',
+                    label: 'Test Result',
+                    field: 'test_result',
                     width: 150
                 }
             ],

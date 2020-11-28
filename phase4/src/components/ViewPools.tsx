@@ -44,7 +44,10 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
                 let temp: pool[] = [];
                 result.result.forEach((e: any) => {
                     let temp_pool: pool = e;
-                    temp_pool.pool_link = "/explore_pool_result?" + temp_pool.pool_id;
+                    if (temp_pool.date_processed !== null) {
+                        temp_pool.date_processed = temp_pool.date_processed.substring(0,10);
+                    }
+                    temp_pool.pool_link = "/explorePoolResult/?" + temp_pool.pool_id;
                     temp.push(temp_pool);
                 })
                 this.setState({pools: temp})
@@ -102,7 +105,7 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
             ],
             rows: [...this.state.pools.map((data, i) => (
                 {
-                   pool_id: <a href={data.pool_link}>{data.pool_id}</a>,
+                   pool_id: <Link to = {data.pool_link} >{data.pool_id}</Link>,
                    test_ids: data.test_ids,
                    date_processed: data.date_processed,
                    processed_by: data.processed_by,

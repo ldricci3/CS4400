@@ -23,6 +23,9 @@ import AggregateTestResults from './components/AggregateTestResults';
 import TesterChangeSite from './components/TesterChangeSite';
 import CreateAppointment from './components/CreateAppointment';
 import ExplorePoolResult from './components/ExplorePoolResult';
+import ExploreTestResult from './components/ExploreTestResult';
+import CreatePool from './components/CreatePool';
+import ProcessPool from './components/ProcessPool';
 
 class App extends React.Component<appProps, appState> {
 
@@ -91,8 +94,17 @@ class App extends React.Component<appProps, appState> {
                 <Route path="/test">
                   <SQLTest/>
                 </Route>
-                <Route path="/ExplorePoolResult/:poolID">
+                <Route path="/explorePoolResult">
                    <ExplorePoolResult user={user} />
+                </Route>
+                <Route path="/exploreTestResult">
+                   <ExploreTestResult user={user} />
+                </Route>
+                <Route path="/createPool">
+                   <CreatePool user={user} />
+                </Route>
+                <Route path="/processpool/:pool_id">
+                   <ProcessPool user={user} />
                 </Route>
               </Switch>
             </Router>
