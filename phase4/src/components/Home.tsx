@@ -149,7 +149,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/createPool">
                                         <Button variant="contained" color="primary">
                                             Create Pool
                                         </Button>
@@ -231,7 +231,7 @@ class Home extends React.Component<homeProps, homeState> {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={6} className={'homeButtonContainer'}>
-                                    <Link to="/example">
+                                    <Link to="/createPool">
                                         <Button variant="contained" color="primary">
                                             Create Pool
                                         </Button>
