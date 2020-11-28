@@ -80,7 +80,7 @@ class AggregateTestResults extends React.Component<aggregateTestResultsProps, ag
 
         const empty_date = new Date(0);
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
-        const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
+        const end_date_string = end_date.toString() === empty_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
 
         const path = `http://localhost:8080/aggregate_results?${location === 'All' ? null : `'${location}'`},${housing === 'All' ? null : `'${housing}'`}, ${site === 'All' ? null : `'${site}'`}, ${start_date_string},${end_date_string},`;

@@ -88,7 +88,7 @@ class Home extends React.Component<homeProps, homeState> {
                                 </Link>
                             </Grid>
                             <Grid item xs={6} className={'homeButtonContainer'}>
-                                <Link to="/createAppointment">
+                                <Link to="/example">
                                     <Button variant="contained" color="primary">
                                         Create Testing Site
                                     </Button>

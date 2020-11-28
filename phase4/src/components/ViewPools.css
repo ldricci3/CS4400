@@ -5,3 +5,8 @@
 .filterLabel {
     margin-right: 1em;
 }
+
+.poolIdLink {
+    color: blue !important;
+    text-decoration: underline;
+}

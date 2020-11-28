@@ -34,11 +34,14 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
 
         const empty_date = new Date(0);
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
-        const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
+        const end_date_string = end_date.toString() === empty_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
 
         const path = `http://localhost:8080/student_view_results?'${this.props.user.username}',${status === 'All' ? null : `'${status}'`},${start_date_string},${end_date_string},`;
         
+        console.log(start_date_string);
+        console.log(end_date_string);
+
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
@@ -128,8 +131,8 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                 <Grid item xs={12}>
                     <h1 className={'pageTitle'}>View Test Results - {this.props.user.username} </h1>
                 </Grid>
-                <Grid container item xs={12} spacing={4}>
-                    <Grid item xs={6}>
+                <Grid container item xs={10} spacing={4} justify={'space-between'}>
+                    <Grid item>
                         <FormLabel component="legend">Test Status</FormLabel>
                         <Select
                             labelId="location-label"
@@ -142,7 +145,7 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                                 <MenuItem value={"Pending"}>Pending</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item xs={6} justify={'center'}>
+                    <Grid item justify={'center'}>
                         <FormLabel component="legend">Start Date</FormLabel>
                         <form noValidate>
                             <TextField
