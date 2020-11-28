@@ -131,8 +131,8 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                 <Grid item xs={12}>
                     <h1 className={'pageTitle'}>View Test Results - {this.props.user.username} </h1>
                 </Grid>
-                <Grid container item xs={12} spacing={4}>
-                    <Grid item xs={6}>
+                <Grid container item xs={10} spacing={4} justify={'space-between'}>
+                    <Grid item>
                         <FormLabel component="legend">Test Status</FormLabel>
                         <Select
                             labelId="location-label"
@@ -145,7 +145,7 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                                 <MenuItem value={"Pending"}>Pending</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item xs={6} justify={'center'}>
+                    <Grid item justify={'center'}>
                         <FormLabel component="legend">Start Date</FormLabel>
                         <form noValidate>
                             <TextField

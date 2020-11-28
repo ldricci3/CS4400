@@ -2,6 +2,7 @@
 .contentPaper {
   min-height: 500px;
   margin-top: 10em;
+  margin-bottom: 10em;
 }
 
 #root {
