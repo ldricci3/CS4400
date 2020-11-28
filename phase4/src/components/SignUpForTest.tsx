@@ -69,7 +69,7 @@ class SignUpForTest extends React.Component<signUpForTestProps, signUpForTestSta
 
         const empty_date = new Date(0);
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
-        const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
+        const end_date_string = end_date.toString() === empty_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
         const start_time_string = start_time ? `'${start_time}:00'` : null;
         const end_time_string = end_time ? `'${end_time}:00'` : null;

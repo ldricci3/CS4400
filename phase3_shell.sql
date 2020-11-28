@@ -167,57 +167,57 @@ BEGIN
 
     	SELECT test_status, count(distinct test_id) as num_of_tests, round((count(distinct test_id) / (
 		SELECT count(distinct test_id) 
-		FROM test, site, student, appointment
+		FROM test, site, student, appointment, pool
 		WHERE
         	(case 
 		when i_location is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_housing is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_testing_site is null then True
-		else test.appt_site = i_testing_site
+		else test.appt_site = i_testing_site and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_start_date is null then True
-		else test.appt_date >= i_start_date
+		else (pool.process_date >= i_start_date or pool.process_date is null) and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_end_date is null then True
-		else test.appt_date <= i_end_date
+		else pool.process_date <= i_end_date and test.pool_id = pool.pool_id
 	end)
 		)) * 100, 2) as percentage
-	FROM test, site, student, appointment
+	FROM test, site, student, appointment, pool
 	WHERE 	(case 
 		when i_location is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_housing is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_testing_site is null then True
-		else test.appt_site = i_testing_site
+		else test.appt_site = i_testing_site and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_start_date is null then True
-		else test.appt_date >= i_start_date
+		else (pool.process_date >= i_start_date or pool.process_date is null) and (test.pool_id = pool.pool_id or test.pool_id is null)
 	end)
 	and
 	(case 
 		when i_end_date is null then True
-		else test.appt_date <= i_end_date
+		else pool.process_date <= i_end_date and test.pool_id = pool.pool_id
 	end)
 	GROUP BY test_status;
 
@@ -371,7 +371,7 @@ BEGIN
         WHERE
 			(CASE 
 				WHEN i_processed_by IS NULL THEN TRUE 
-				ELSE processed_by = i_processed_by AND pool_status != "pending"
+				ELSE processed_by LIKE CONCAT("%", CONCAT(i_processed_by, "%")) AND pool_status != "pending"
 			END) AND (CASE
 				WHEN i_end_process_date IS NULL THEN TRUE
 				ELSE process_date <= i_end_process_date AND pool_status != "pending"

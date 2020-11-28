@@ -33,7 +33,7 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
 
         const empty_date = new Date(0);
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
-        const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
+        const end_date_string = end_date.toString() === empty_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
         const path = `http://localhost:8080/tests_processed?${start_date_string},${end_date_string},${test_status === 'ALL' ? null : `'${test_status}'`},'${this.props.user.username}'`;
 
