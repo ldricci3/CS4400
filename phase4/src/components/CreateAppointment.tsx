@@ -90,8 +90,18 @@ class CreateAppointment extends React.Component<createAppointmentsProps, createA
                 console.log(res);
                 if (res.Success) {
                     console.log("Successfully Created");
+                    this.setState({success: ' : Appointment Created Successfully'});
+                } else {
+                    console.log(res);
+                    this.setState({success: ' : Appointment Creation Failed'});
+                    if (res.errno === 1062) {
+                        this.setState({success: ' : Appointment Creation Failed - Duplicate Appointment'});
+                    }
+                    if (res.errno === 1644) {
+                        this.setState({success: res.sqlMessage});
+                    }
                 }
-                this.setState({success: '- Appointment Created Successfully'});
+                
             })
             .catch((err) => {
                 console.log(err);
@@ -134,7 +144,6 @@ class CreateAppointment extends React.Component<createAppointmentsProps, createA
                             required
                             value={testing_site}
                             onChange={(event) => this.setState({testing_site: `${event.target.value}`})}>
-                                <MenuItem value={"ALL"}>All</MenuItem>
                                 {testing_sites.map((site: testingSite) => (
                                     <MenuItem value={site.site_name} key={site.site_name}>{site.site_name}</MenuItem>
                                 ))}
