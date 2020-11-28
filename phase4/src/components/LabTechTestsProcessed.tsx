@@ -43,7 +43,9 @@ class LabTechTestsProcessed extends React.Component<labTechTestsProcessedProps, 
                 let temp: test[] = [];
                 result.result.forEach((e: any) => {
                     let temp_test: test = e;
-                    temp_test.pool_link = "/explore_pool_result?" + temp_test.pool_id;
+                    temp_test.test_date = temp_test.test_date.substring(0,10)
+                    temp_test.process_date = temp_test.test_date.substring(0,10)
+                    temp_test.pool_link = "/explorePoolResult/?" + temp_test.pool_id;
                     temp.push(temp_test);
                 })
                 this.setState({tests: temp})

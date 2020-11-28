@@ -93,7 +93,7 @@ class App extends React.Component<appProps, appState> {
                 <Route path="/test">
                   <SQLTest/>
                 </Route>
-                <Route path="/ExplorePoolResult/:poolID">
+                <Route path="/explorePoolResult">
                    <ExplorePoolResult user={user} />
                 </Route>
                 <Route path="/exploreTestResult">
