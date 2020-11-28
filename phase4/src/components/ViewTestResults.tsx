@@ -34,11 +34,14 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
 
         const empty_date = new Date(0);
         const start_date_string = start_date.toString() === empty_date.toString() ? null : `'${start_date.toISOString().substring(0,10)}'`;
-        const end_date_string = end_date.toString() === end_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
+        const end_date_string = end_date.toString() === empty_date.toString() ? null : `'${end_date.toISOString().substring(0,10)}'`;
 
 
         const path = `http://localhost:8080/student_view_results?'${this.props.user.username}',${status === 'All' ? null : `'${status}'`},${start_date_string},${end_date_string},`;
         
+        console.log(start_date_string);
+        console.log(end_date_string);
+
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
