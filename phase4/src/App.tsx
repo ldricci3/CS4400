@@ -26,6 +26,7 @@ import ExplorePoolResult from './components/ExplorePoolResult';
 import ExploreTestResult from './components/ExploreTestResult';
 import CreatePool from './components/CreatePool';
 import ProcessPool from './components/ProcessPool';
+import ReassignTester from './components/ReassignTester';
 
 class App extends React.Component<appProps, appState> {
 
@@ -105,6 +106,9 @@ class App extends React.Component<appProps, appState> {
                 </Route>
                 <Route path="/processpool/:pool_id">
                    <ProcessPool user={user} />
+                </Route>
+                <Route path="/reassignTester">
+                  <ReassignTester user={user}/>
                 </Route>
               </Switch>
             </Router>

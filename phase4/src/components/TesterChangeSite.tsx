@@ -156,24 +156,24 @@ class TesterChangeSite extends React.Component<testerChangeSiteProps, testerChan
                     </Grid>
                 </Paper>
                 <Grid container item xs={10} justify={"space-between"}>
-                        <Grid item>
-                            <Link to="/home">
-                                <Button variant="contained" color="primary">
-                                    Back (Home)
-                                </Button>
-                            </Link>
-                        </Grid>
-
-                        <Grid item>
-                            <Button 
-                                variant="contained" 
-                                color="primary" 
-                                onClick={() => this.updateAssignedSites(originalAssignedSites, assignedSites)} 
-                                disabled={JSON.stringify(originalAssignedSites)==JSON.stringify(assignedSites)}>
-                                Update
+                    <Grid item>
+                        <Link to="/home">
+                            <Button variant="contained" color="primary">
+                                Back (Home)
                             </Button>
-                        </Grid>
+                        </Link>
                     </Grid>
+
+                    <Grid item>
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            onClick={() => this.updateAssignedSites(originalAssignedSites, assignedSites)} 
+                            disabled={JSON.stringify(originalAssignedSites)==JSON.stringify(assignedSites)}>
+                            Update
+                        </Button>
+                    </Grid>
+                </Grid>
                 
                 {error && <p className={error}>{error}</p>}
             </Grid>
