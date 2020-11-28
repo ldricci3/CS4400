@@ -371,7 +371,7 @@ BEGIN
         WHERE
 			(CASE 
 				WHEN i_processed_by IS NULL THEN TRUE 
-				ELSE processed_by = i_processed_by AND pool_status != "pending"
+				ELSE processed_by LIKE CONCAT("%", CONCAT(i_processed_by, "%")) AND pool_status != "pending"
 			END) AND (CASE
 				WHEN i_end_process_date IS NULL THEN TRUE
 				ELSE process_date <= i_end_process_date AND pool_status != "pending"
