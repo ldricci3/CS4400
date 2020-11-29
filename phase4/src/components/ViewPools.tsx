@@ -46,8 +46,10 @@ class ViewPools extends React.Component<ViewPoolsProps, ViewPoolsState> {
                     let temp_pool: pool = e;
                     if (temp_pool.date_processed !== null) {
                         temp_pool.date_processed = temp_pool.date_processed.substring(0,10);
+                        temp_pool.pool_link = "/explorePoolResult/?" + temp_pool.pool_id;
+                    } else {
+                        temp_pool.pool_link = "/processPool/?" + temp_pool.pool_id;
                     }
-                    temp_pool.pool_link = "/explorePoolResult/?" + temp_pool.pool_id;
                     temp.push(temp_pool);
                 })
                 this.setState({pools: temp})

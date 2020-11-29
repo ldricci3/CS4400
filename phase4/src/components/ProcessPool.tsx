@@ -23,7 +23,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
             //loading: false,
             //error: '',
             success: '',
-            poolID: parseInt(window.location.href.substring(34)),
+            poolID: parseInt(window.location.href.substring(window.location.href.indexOf('?') + 1)),
             tests: [],
             username: this.props.user.username,
             date_processed: new Date(0),
@@ -48,7 +48,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                         test_id: e.test_id,
                         date_tested: e.date_tested.substring(0,10),
                         test_result: 'negative',
-                        date_processed: e.process_date === undefined ? null:  e.process_date.substring(0,10)
+                        //date_processed: e.process_date === undefined ? null:  e.process_date.substring(0,10)
                     };
                     temp.push(tr);
                 })
@@ -63,6 +63,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
         const {poolID, pool_status, date_processed, username} = this.state;
         const empty_date = new Date(0);
         const date_processed_string = date_processed.toString() === empty_date.toString() ? null : `'${date_processed.toISOString().substring(0,10)}'`;
+        console.log(date_processed_string);
 
         const path = `http://localhost:8080/process_pool?${poolID},'${pool_status}',${date_processed_string},'${username}'`;
 
@@ -78,8 +79,9 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
             });
     }
 
-    processTest(rows: test[]) {
+    processTest(temp_res: test[]) {
         const {tests, pool_status} = this.state;
+        console.log(temp_res);
 
         if (pool_status == "negative") {
             tests.forEach((e: any) => {
@@ -99,7 +101,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     });
             });
         } else {
-            rows.forEach((e: any) => {
+            temp_res.forEach((e: any) => {
                 const path = `http://localhost:8080/process_test?${e.test_id},'${e.test_result}'`;
 
                 if (e.test_result == 'positive' || e.test_result == 'negative') {
@@ -138,6 +140,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
         const empty_date = new Date(0);
 
         let rows: any[] = [];
+        let temp_res: test[] = [];
         tests.forEach((t: test) => {
             rows.push({
                 test_id: t.test_id,
@@ -147,6 +150,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                             <MenuItem value={"negative"}>Negative</MenuItem>
                         </Select>
             })
+            temp_res.push(t);
         })
 
             let data = {
@@ -219,7 +223,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
         /**
          * Redirects the user to the home page if they do not have permissions to be on the page
          */
-        if (!this.props.user.isLabTech || tests[0].date_processed !== null) { //this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+        if (!this.props.user.isLabTech){ //|| tests[0].date_processed !== undefined) {
             return (<Redirect to={'/home'}></Redirect>)
         }
 
@@ -292,7 +296,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     <Grid item xs={2}>
                         <Button variant="contained" color="primary" onClick={() => {
                             if (date_processed !== empty_date && pool_status !== '') {
-                                this.processPool(); this.processTest(rows)
+                                this.processPool(); this.processTest(temp_res)
                                 } else {
                                 this.setState({success: 'please fill in all fields'});
                                 }
@@ -322,7 +326,7 @@ type test = {
     test_id: number,
     date_tested: string,
     test_result: string,
-    date_processed: string
+    //date_processed: string
 }
 
 type processPoolProps = {

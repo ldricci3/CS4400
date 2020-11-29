@@ -79,6 +79,10 @@ class ExplorePoolResult extends React.Component<ExplorePoolResultProps, ExploreP
             pool_data,
             tests } = this.state;
 
+        /*if (!this.props.user.isLabTech) { //this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+            return (<Redirect to={'/home'}></Redirect>)
+        }*/
+
         // This was non-brute force method, but I don't MDBDataTable works this way...
         /* const poolData = {
             rows: [

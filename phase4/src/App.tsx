@@ -105,7 +105,7 @@ class App extends React.Component<appProps, appState> {
                 <Route path="/createPool">
                    <CreatePool user={user} />
                 </Route>
-                <Route path="/processpool/:pool_id">
+                <Route path="/processpool">
                    <ProcessPool user={user} />
                 </Route>
                 <Route path="/reassignTester">

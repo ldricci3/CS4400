@@ -101,7 +101,7 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
             rows.push({
                 test_id: tests[i].test_id,
                 date_tested: tests[i].date_tested,
-                radio: <Checkbox
+                checkBox: <Checkbox
                             checked={selectedTests[i]}
                             onChange={(event) => (selectedTests[i] = !selectedTests[i])}
                             color="primary"
@@ -128,7 +128,7 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
                 },
                 {
                     label: 'Include in Pool',
-                    field: 'radio',
+                    field: 'checkBox',
                     width: 150
                 }
             ],
