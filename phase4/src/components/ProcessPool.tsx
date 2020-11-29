@@ -145,7 +145,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
             rows.push({
                 test_id: t.test_id,
                 date_tested: t.date_tested,
-                select: <Select onChange={(event) => t.test_result= `${event.target.value}`}>
+                select: <Select defaultValue='negative' onChange={(event) => t.test_result= `${event.target.value}`}>
                             <MenuItem value={"positive"}>Positive</MenuItem>
                             <MenuItem value={"negative"}>Negative</MenuItem>
                         </Select>
