@@ -14,7 +14,7 @@ class ExplorePoolResult extends React.Component<ExplorePoolResultProps, ExploreP
             // error: '',
             poolID: parseInt(window.location.href.substring(window.location.href.indexOf('?') + 1)),
             // poolResults: [],
-            pool_data: [],
+            pool_data: [{'label': 'Not Processed', 'datum': 'Not Processed'}],
             tests: []
         };
     }
