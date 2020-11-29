@@ -171,53 +171,156 @@ BEGIN
 		WHERE
         	(case 
 		when i_location is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
 	end)
 	and
 	(case 
 		when i_housing is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
 	end)
 	and
 	(case 
 		when i_testing_site is null then True
-		else test.appt_site = i_testing_site and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = i_testing_site
 	end)
 	and
 	(case 
 		when i_start_date is null then True
-		else (pool.process_date >= i_start_date or pool.process_date is null) and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else (pool.process_date >= i_start_date or pool.process_date is null)
 	end)
 	and
 	(case 
 		when i_end_date is null then True
 		else pool.process_date <= i_end_date and test.pool_id = pool.pool_id
 	end)
+    and (test.pool_id = pool.pool_id or test.pool_id is null)
 		)) * 100, 2) as percentage
 	FROM test, site, student, appointment, pool
 	WHERE 	(case 
 		when i_location is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
 	end)
 	and
 	(case 
 		when i_housing is null then True
-		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
 	end)
 	and
 	(case 
 		when i_testing_site is null then True
-		else test.appt_site = i_testing_site and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else test.appt_site = i_testing_site
 	end)
 	and
 	(case 
 		when i_start_date is null then True
-		else (pool.process_date >= i_start_date or pool.process_date is null) and (test.pool_id = pool.pool_id or test.pool_id is null)
+		else (pool.process_date >= i_start_date or pool.process_date is null)
 	end)
 	and
 	(case 
 		when i_end_date is null then True
 		else pool.process_date <= i_end_date and test.pool_id = pool.pool_id
+	end)
+    and (test.pool_id = pool.pool_id or test.pool_id is null)
+	GROUP BY test_status;
+
+
+    -- End of solution
+END$$
+DELIMITER ;
+
+-- ID: 6b
+-- Author: colin
+-- Name: aggregate_results_null
+ DROP PROCEDURE IF EXISTS aggregate_results_nul;
+DELIMITER $$
+CREATE PROCEDURE aggregate_results_nul(
+    IN i_location VARCHAR(50),
+    IN i_housing VARCHAR(50),
+    IN i_testing_site VARCHAR(50),
+    IN i_start_date DATE,
+    IN i_end_date DATE)
+BEGIN
+    DROP TABLE IF EXISTS aggregate_results_nul_result;
+    CREATE TABLE aggregate_results_nul_result(
+        test_status VARCHAR(40),
+        num_of_test INT,
+        percentage DECIMAL(6,2)
+    );
+
+    INSERT INTO aggregate_results_nul_result
+
+    -- Type solution below
+
+    	SELECT test_status, count(distinct test_id) as num_of_tests, round((count(distinct test_id) / (
+		SELECT count(distinct test_id) 
+		FROM test, site, student, appointment, pool
+		WHERE test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and (test.pool_id = pool.pool_id or test.pool_id is null)
+        )) * 100, 2) as percentage
+		FROM test, site, student, appointment, pool
+		WHERE test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and (test.pool_id = pool.pool_id or test.pool_id is null)
+		GROUP BY test_status;
+
+
+    -- End of solution
+END$$
+DELIMITER ;
+
+-- ID: 6c
+-- Author: asmith457
+-- Name: aggregate_results
+DROP PROCEDURE IF EXISTS aggregate_results_nodate;
+DELIMITER $$
+CREATE PROCEDURE aggregate_results_nodate(
+    IN i_location VARCHAR(50),
+    IN i_housing VARCHAR(50),
+    IN i_testing_site VARCHAR(50),
+    IN i_start_date DATE,
+    IN i_end_date DATE)
+BEGIN
+    DROP TABLE IF EXISTS aggregate_results_nodate_result;
+    CREATE TABLE aggregate_results_nodate_result(
+        test_status VARCHAR(40),
+        num_of_test INT,
+        percentage DECIMAL(6,2)
+    );
+
+    INSERT INTO aggregate_results_nodate_result
+
+    -- Type solution below
+
+    	SELECT test_status, count(distinct test_id) as num_of_tests, round((count(distinct test_id) / (
+		SELECT count(distinct test_id) 
+		FROM test, site, student, appointment
+		WHERE
+        	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
+	end)
+		)) * 100, 2) as percentage
+	FROM test, site, student, appointment
+	WHERE 	(case 
+		when i_location is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.location = i_location
+	end)
+	and
+	(case 
+		when i_housing is null then True
+		else test.appt_site = appointment.site_name and test.appt_time = appointment.appt_time and test.appt_date = appointment.appt_date and appointment.username = student.student_username and student.housing_type = i_housing
+	end)
+	and
+	(case 
+		when i_testing_site is null then True
+		else test.appt_site = i_testing_site
 	end)
 	GROUP BY test_status;
 

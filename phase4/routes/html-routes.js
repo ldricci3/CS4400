@@ -332,6 +332,33 @@ const get_max_test_id = function(app, connection) {
     });
 };
 
+const aggregate_results_nul = function(app, connection) {
+    app.get("/aggregate_results_nul", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.aggregate_results_nul(${query_args[0]},${query_args[1]},${query_args[2]},${query_args[3]},${query_args[4]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.aggregate_results_nul_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+const aggregate_results_nodate = function(app, connection) {
+    app.get("/aggregate_results_nodate", function(req, res) {
+        query = decodeURI(req._parsedUrl.query);
+        query_args = query.split(',');
+        connection.query(`CALL covidtest_fall2020.aggregate_results_nodate(${query_args[0]},${query_args[1]},${query_args[2]},${query_args[3]},${query_args[4]})`, function(err, data) {
+            (err)?res.send(err):connection.query(`SELECT * FROM covidtest_fall2020.aggregate_results_nodate_result;`, function(err, data) {
+                    (err)?res.send(err):res.json({result: data})
+                }
+            );
+        });
+    });
+};
+
+
 module.exports = function(app, connection) {
     test(app, connection);
     register_student(app, connection);
@@ -339,6 +366,8 @@ module.exports = function(app, connection) {
     student_view_results(app, connection);
     explore_results(app, connection);
     aggregate_results(app, connection);
+    aggregate_results_nul(app, connection);
+    aggregate_results_nodate(app, connection);
     test_sign_up_filter(app, connection);
     test_sign_up(app, connection);
     tests_processed(app, connection);
