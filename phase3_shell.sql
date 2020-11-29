@@ -515,6 +515,11 @@ CREATE PROCEDURE create_appointment(
 )
 BEGIN
 -- Type solution below
+	IF (SELECT COUNT(*) FROM APPOINTMENT WHERE site_name = i_site_name AND appt_date = i_date) >= (SELECT 10 *COUNT(*) FROM WORKING_AT WHERE site = i_site_name) THEN
+			SIGNAL SQLSTATE '45000'
+					SET MESSAGE_TEXT = 'A testing site can only have 10 x (number of assigned testers) appointments open in a single day';
+	END IF;
+    
 	INSERT INTO APPOINTMENT(username, site_name, appt_date, appt_time)
     SELECT null, i_site_name, i_date, i_time
     FROM DUAL
@@ -747,7 +752,6 @@ BEGIN
     -- End of solution
     END //
     DELIMITER ;
-
 
 
 
