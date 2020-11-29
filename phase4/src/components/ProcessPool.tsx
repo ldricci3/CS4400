@@ -295,7 +295,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     </Grid>
                     <Grid item xs={2}>
                         <Button variant="contained" color="primary" onClick={() => {
-                            if (date_processed !== empty_date && pool_status !== '') {
+                            if ((date_processed !== empty_date) && (pool_status !== '')) {
                                 this.processPool(); this.processTest(temp_res)
                                 } else {
                                 this.setState({success: 'please fill in all fields'});
@@ -332,6 +332,7 @@ type test = {
 type processPoolProps = {
     user: user
 }
+
 
                         /** This is what I tried to use...
                         <AppBar position="static">
