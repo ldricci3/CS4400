@@ -824,6 +824,36 @@ CREATE PROCEDURE unassign_tester(
 )
 BEGIN
 -- Type solution below
+	DECLARE TESTERVAL INT;
+    DECLARE MAXAPPTPOSSIBLE INT;
+    DECLARE MAXAPPTACTUAL INT;
+    
+	SELECT COUNT(username) INTO TESTERVAL
+	FROM working_at 
+	WHERE site = i_site_name;
+    
+    SELECT 10 * TESTERVAL INTO MAXAPPTPOSSIBLE;
+    
+    SELECT max(daily_tests) INTO MAXAPPTACTUAL
+	FROM (
+	SELECT count(*) as 'daily_tests'
+    FROM appointment
+    WHERE site_name = i_site_name
+    group by appt_date
+    having appt_date is not null and appt_date > curdate()) as temp;
+    
+	IF TESTERVAL = 1 
+    THEN 
+		SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'This tester is the only one at this site';
+	END IF;
+    
+	IF (MAXAPPTACTUAL) > (MAXAPPTPOSSIBLE - 10) 
+    THEN 
+		SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'There are too many tests at this location to remove this tester';
+	END IF;
+    
 	if exists(select * from working_at where site = i_site_name and not username = i_tester_username) then
     delete from working_at
     where username = i_tester_username and site = i_site_name;
