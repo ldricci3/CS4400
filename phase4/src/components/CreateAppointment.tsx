@@ -188,7 +188,7 @@ class CreateAppointment extends React.Component<createAppointmentsProps, createA
                         </Link>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="contained" color="primary" onClick={() => this.scheduleAppointment()}>
+                        <Button variant="contained" color="primary" onClick={() => this.scheduleAppointment()} disabled={testing_site === 'ALL'}>
                             Create
                         </Button>
                     </Grid>
