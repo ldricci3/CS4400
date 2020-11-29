@@ -63,7 +63,12 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
         fetch(path)
             .then((res) => res.json())
             .then((result) => {
-                this.setState({locations: result.result})
+                let temp: location[] = [];
+                result.result.forEach((e: any) => {
+                    let loc: location = e;
+                    temp.push(loc);
+                })
+                this.setState({locations: temp})
             })
             .catch((error) => {
                 console.log(error);
@@ -73,7 +78,8 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
     create_testing_site() {
         const {site_name, street_address, city, site_state, zip_code, location, site_tester} = this.state;
 
-        const path = `http://localhost:8080/create_testing_site?${site_name},${street_address},${city},${site_state},${zip_code},${location},${site_tester}`;
+        const path = `http://localhost:8080/create_testing_site?'${site_name}','${street_address}','${city}','${site_state}','${zip_code}','${location}','${site_tester}'`;
+        //console.log(path);
         if (site_name != '' && street_address != '' &&  city != '' && site_state != '' && zip_code != '' && location != '' && site_tester != '') {
             fetch(path).then((res) => res.json())
                 .then((res) => {
@@ -223,10 +229,8 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
                             variant="outlined"
                             value={location}
                             onChange={(event) => this.setState({location: `${event.target.value}`})}>
-                                <MenuItem value={'East"'} key={'East'}>East</MenuItem>
-                                <MenuItem value={'West'} key={'West'}>West</MenuItem>
-                                {locations.map((loc: string) => (
-                                    <MenuItem value={loc} key={loc}>{loc}</MenuItem>
+                                {locations.map((loc: location) => (
+                                    <MenuItem value={loc.location_name} key={loc.location_name}>{loc.location_name}</MenuItem>
                                 ))}
                         </Select>
                     </Grid>
@@ -280,7 +284,7 @@ type createTestingSiteState = {
     site_state: string,
     zip_code: string,
     location: string,
-    locations: string[],
+    locations: location[],
     site_tester: string,
     testers: tester[]
 }
@@ -296,6 +300,10 @@ type appointment = {
 type tester = {
     username: string,
     name: string
+}
+
+type location = {
+    location_name: string
 }
 
 const empty_tester = {
