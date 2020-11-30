@@ -34,6 +34,7 @@ class Register extends React.Component<registerProps, registerState> {
             housingType: '',
             location: '',
             phoneNumber: '',
+            // errorMessage: '',
             isSiteTester: false,
             isLabTech: false
         }
@@ -69,6 +70,10 @@ class Register extends React.Component<registerProps, registerState> {
                     return;
                 }
 
+                if (result.Success) {
+                    this.setState({error: 'Success'});
+                }
+
                 const newUser: user = {
                     username: username,
                     email: email,
@@ -100,6 +105,7 @@ class Register extends React.Component<registerProps, registerState> {
             housingType,
             location,
             phoneNumber,
+            // errorMessage,
             isSiteTester,
             isLabTech } = this.state;
 
@@ -120,7 +126,7 @@ class Register extends React.Component<registerProps, registerState> {
         return (
             <Grid container justify={'center'} spacing={3}>
                 <Grid item xs={12}>
-                    <h1 className={'pageTitle'}>Register</h1>
+                    <h1 className={'pageTitle'}>Register </h1>
                 </Grid>
 
                 <Grid item container xs={8} spacing={3}>
@@ -328,6 +334,7 @@ type registerState = {
     housingType: string,
     location: string,
     phoneNumber: string,
+    // errorMessage: string,
     isSiteTester: boolean,
     isLabTech: boolean
 }
