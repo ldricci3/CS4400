@@ -7,7 +7,7 @@ Lewey Wilson (Lwilson67)
 
 # Our Instructions:
 
-To run our application for the first time, you will need to create a MySQL user under MySQL Workbench Administration with username "username" and password "password" and give them the DB Admin role on the next pane (bad practice but this is all local). If you do not do this, you will need to replace the parameters in lines 13 and 14 of server.js with the credentials of a user in your MySQL instance who has full priveledges to the "covidtest_fall2020" database.
+To run our application for the first time, you will need to create a MySQL user under MySQL Workbench Administration with username "username" and password "password" and give them the DB Admin role on the next pane (bad practice but this is all local). If you do not do this, you will need to replace the parameters in lines 13 and 14 of server.js with the credentials of a user in your MySQL instance who has full privelidages to the "covidtest_fall2020" database.
 
 Our Phase 4 implementation was developed using the latest version of the "covidtest_fall2020" database, created using the db_init file on Canvas. For Phase 4, despite receiving a 100% on Phase 3, we rewrote some procedures in order to more gracefully handle errors in the frontend (rather than successfully updating zero rows). Because of this, **you will need to add our procedures to your database using "phase3_shell.sql"** located in the root of our team repo, just one level above the Phase 4 directory.
 
@@ -37,7 +37,7 @@ You will also see any lint errors in the console.
 
 # Technologies Used
 
-We chose to implement Phase 4 as a webapp. We used React and TypeScript as our respective frontend framework and language. For the backend we used NodeJS and Express to implement a simple API to interfact with the MySQL database we have been working with throughout the semester.
+We chose to implement Phase 4 as a webapp. We used React and TypeScript as our respective frontend framework and language. For the backend we used NodeJS and Express.js to implement a simple API to interact with the MySQL database we have been working with throughout the semester. The API utilizes a MySQL plugin to interact with the databases and maps each procedure to its own route, parsing the parameters from the url as they come in.
 
 # Work Distribution
 
