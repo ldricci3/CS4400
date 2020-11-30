@@ -7,8 +7,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { MDBDataTable } from 'mdbreact';
-import { parse } from 'url';
 
 class CreateTestingSite extends React.Component<createTestingSiteProps, createTestingSiteState> {
     constructor(props: createTestingSiteProps) {
@@ -86,15 +84,18 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
                     console.log(res);
                     if (res.Success) {
                         console.log("Successfully Created");
+                        this.setState({error: '', success: 'Testing Site Created Successfully', site_name: '', street_address: '', city: '', site_state: '', zip_code: '', location: '', site_tester: ''});
+                    } else if (res.code === 'ER_SIGNAL_EXCEPTION' && res.sqlMessage === 'Testing site with this name already exists'){
+                        this.setState({error: 'Testing site with this name already exists', success: ''})
                     }
-                    this.setState({success: '- Testing Site Created Successfully'});
+                    
                 })
                 .catch((err) => {
                     console.log(err);
-                    this.setState({success: '- Testing Site Creation Failed'});
+                    this.setState({error: 'Testing Site Creation Failed', success: ''});
                 });
         } else{
-            this.setState({success: '- Please fill in all values'});
+            this.setState({error: 'Please fill in all values', success: ''});
         }
     }
 
@@ -126,7 +127,7 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
         return (
             <Grid container justify={'center'} spacing={3}>
                 <Grid item xs={12}>
-                    <h1 className={'pageTitle'}>Create Testing Site {success}</h1>
+                    <h1 className={'pageTitle'}>Create Testing Site</h1>
                 </Grid>
                 <Grid container item xs={10} justify={'space-between'} alignItems={"baseline"}>
                     <Grid item xs={4} >
@@ -268,6 +269,7 @@ class CreateTestingSite extends React.Component<createTestingSiteProps, createTe
                     </Grid>
                 </Grid>
                 {error ?? <p className={'error'}>{error}</p>}
+                {success && <p>Site Created Successfully</p>}
             </Grid>
         );
     }

@@ -728,6 +728,11 @@ CREATE PROCEDURE create_testing_site(
 )
 BEGIN
 -- Type solution below
+	IF (SELECT count(*) FROM SITE WHERE site_name = i_site_name) > 0 THEN 	
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Testing site with this name already exists';
+	END IF;
+
 	INSERT INTO SITE(site_name, street, city, state, zip, location)
     SELECT i_site_name, i_street, i_city, i_state, i_zip, i_location 
     FROM DUAL
