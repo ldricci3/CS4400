@@ -32,6 +32,12 @@ CREATE PROCEDURE register_student(
 BEGIN
 
 -- Type solution below
+IF (SELECT count(*) FROM user WHERE fname = i_fname and lname = i_lname) > 0 THEN 	
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'This First/Last Name Already Exists';
+END IF;
+
+
 INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
 INSERT INTO student (student_username, housing_type, location) VALUES (i_username, i_housing_type, i_location);
 -- End of solution
@@ -55,6 +61,11 @@ CREATE PROCEDURE register_employee(
 )
 BEGIN
 -- Type solution below
+IF (SELECT count(*) FROM user WHERE fname = i_fname and lname = i_lname) > 0 THEN 	
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'This First/Last Name Already Exists';
+END IF;
+
 INSERT INTO user (username, user_password, email, fname, lname) VALUES (i_username, MD5(i_password), i_email, i_fname, i_lname);
 INSERT INTO employee (emp_username, phone_num) VALUES (i_username, i_phone);
 
