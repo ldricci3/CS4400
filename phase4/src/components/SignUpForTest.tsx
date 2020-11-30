@@ -143,6 +143,7 @@ class SignUpForTest extends React.Component<signUpForTestProps, signUpForTestSta
          * Redirects the user to the home page if they do not have permissions to be on the page
          */
         if (this.props.user.role !== userType.STUDENT && this.props.user.role !== userType.ADMIN || hasPendingTest) {
+            alert("Since you have a pending test, you are now being redirected to the home page");
             return (<Redirect to={'/home'}></Redirect>)
         }
 

@@ -3,15 +3,14 @@ import { Link, Redirect } from 'react-router-dom';
 import {user, userType, testingSite} from '../utils';
 import './ViewAppointments.css';
 import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { MDBDataTable } from 'mdbreact';
-import { parse } from 'url';
-import Radio from '@material-ui/core/Radio';
 import Checkbox from '@material-ui/core/Checkbox';
+import {Promise} from "bluebird";
+var _ = require('lodash');
+
 
 class CreatePool extends React.Component<createPoolProps, createPoolState> {
     constructor(props: createPoolProps) {
@@ -22,7 +21,7 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
             error: '',
             poolID: 0,
             tests: [],
-            selectedTests: []
+            numSelected: 0
         };
     }
 
@@ -38,17 +37,8 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
             .then((result) => {
                 console.log(result.result);
                 let temp0: test[] = [];
-                let temp1: boolean[] = [];
-                result.result.forEach((e: any) => {
-                    let tr: test = e;
-                    tr.date_tested = e.date_tested.substring(0,10);
-                    temp0.push(tr);
-                    temp1.push(false);
-                })
-                this.setState({
-                    tests: temp0,
-                    selectedTests: temp1
-                })
+                result.result.forEach((e: any) => temp0.push({test_id: e.test_id ,date_tested: e.date_tested.substring(0,10), selected: false}));
+                this.setState({tests: temp0});
             })
             .catch((error) => {
                 console.log(error);
@@ -56,63 +46,56 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
     }
 
     createPool() {
-        const {poolID, tests, selectedTests} = this.state;
+        const {poolID, tests} = this.state;
+
         let temp: number[] = [];
-        for (let i = 0; i < selectedTests.length; i++) {
-            if (selectedTests[i]) {
-                temp.push(tests[i].test_id);
-            }
-        }
-        const path = `http://localhost:8080/create_pool?${poolID},${temp[0]}`;
+
+        tests.forEach((test) => test.selected && temp.push(test.test_id));
+
+        const path = `http://localhost:8080/create_pool?${poolID},${temp.pop()}`;
 
         fetch(path).then((res) => res.json())
             .then((res) => {
                 console.log(res);
                 if (res.Success) {
                     console.log("Successfully Created");
+
+                    let paths: string[] = [];
+                    temp.forEach((test_id: number) => paths.push(`http://localhost:8080/assign_test_to_pool?${poolID},${test_id}`))
+
+                    Promise.map(paths, (path: string) => {
+                        return fetch(path)
+                    })
+                    .then((results: any[]) => {
+                        this.loadTests();
+                    })
                 }
             })
             .catch((err) => {
                 console.log(err);
             });
-
-        for (var i = 1; i < temp.length; i++) {
-        const path = `http://localhost:8080/assign_test_to_pool?${poolID},${temp[i]}`;
-
-            fetch(path).then((res) => res.json())
-                .then((res) => {
-                    console.log(res);
-                    if (res.Success) {
-                        console.log("Successfully Created");
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-
     }
 
     render() {
-        const { poolID, tests, selectedTests } = this.state;
-
+        const { poolID, tests, numSelected } = this.state;
+        console.log(this.state);
         let rows: any[] = [];
-        for(let i = 0; i < tests.length; i++) {
-            rows.push({
-                test_id: tests[i].test_id,
-                date_tested: tests[i].date_tested,
-                checkBox: <Checkbox
-                            checked={selectedTests[i]}
-                            onChange={(event) => (selectedTests[i] = !selectedTests[i])}
-                            color="primary"
-                        />
-                // radio: <Radio
-                //     // this is the part that needs fixing.  must allow multiple checked boxes
-                //     checked={selectedTests[0].test_id + selectedTests[0].date_tested === t.test_id + t.date_tested}
-                //     onChange={(event) =>
-                //     temp.push(t)}/>
-            })
-        }
+
+        tests.forEach((test) => rows.push({
+            test_id: test.test_id,
+            date_tested: test.date_tested,
+            selected: <Checkbox
+                        checked={test.selected}
+                        color="primary"
+                        disabled={numSelected >= 7}
+                        onClick={() => {
+                            if (!test.selected || numSelected < 7) {
+                                let copy: test[] = _.cloneDeep(tests);
+                                copy[copy.findIndex((e: test) => e.test_id === test.test_id)].selected = !test.selected;
+                                this.setState({tests: copy, numSelected: test.selected ? numSelected - 1 : numSelected + 1});
+                            }
+                        }}/>
+        }))
 
         const data = {
             columns: [
@@ -128,18 +111,17 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
                 },
                 {
                     label: 'Include in Pool',
-                    field: 'checkBox',
+                    field: 'selected',
                     width: 150
                 }
             ],
-            rows: tests
+            rows: rows
         }
-        //console.log(this.state);
 
-        /**
-         * Redirects the user to the home page if they do not have permissions to be on the page
-         */
-        if (!this.props.user.isLabTech) { //this.props.user.role !== userType.ADMIN && !this.props.user.isSiteTester) {
+        // /**
+        //  * Redirects the user to the home page if they do not have permissions to be on the page
+        //  */
+        if (!this.props.user.isLabTech) {
             return (<Redirect to={'/home'}></Redirect>)
         }
 
@@ -154,6 +136,7 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
                         <form noValidate>
                             <TextField
                                 type="number"
+                                error={poolID < 0}
                                 value={poolID}
                                 className={"poolID-picker"}
                                 onChange={(event) => this.setState({poolID: event.target.value === '' ? 0 : parseInt(event.target.value)})}
@@ -175,16 +158,16 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
                         />
                 </Grid>
 
-                <Grid container item xs={10} spacing={2}>
-                    <Grid item xs={8}>
+                <Grid container item xs={10} spacing={2} justify={'space-between'}>
+                    <Grid item>
                         <Link to="/home">
                             <Button variant="contained" color="primary">
                                 Back (Home)
                             </Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={2}>
-                        <Button variant="contained" color="primary" onClick={() => this.createPool()}>
+                    <Grid item>
+                        <Button variant="contained" color="primary" disabled={numSelected === 0 || poolID <= 0} onClick={() => this.createPool()}>
                             Create
                         </Button>
                     </Grid>
@@ -200,12 +183,13 @@ type createPoolState = {
     error: string,
     poolID: number,
     tests: test[],
-    selectedTests: boolean[]
+    numSelected: number
 }
 
 type test = {
     test_id: number,
-    date_tested: string
+    date_tested: string,
+    selected: boolean
 }
 const emptyTest = {
     test_id: 0,

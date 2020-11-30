@@ -263,7 +263,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     </Grid>
                 </Grid>
 
-                <Grid container item xs={10} justify={'space-between'}>
+                <Grid container item xs={10} justify={'center'}>
                     <Grid item>
                         <FormControl>
                           <FormLabel component="legend">Pool Status</FormLabel>
@@ -285,15 +285,15 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     </Grid>
                 </Grid>
 
-                <Grid container item xs={10} spacing={2}>
-                    <Grid item xs={8}>
+                <Grid container item xs={10} spacing={2} justify={'space-between'}>
+                    <Grid item>
                         <Link to="/home">
                             <Button variant="contained" color="primary">
                                 Back (Home)
                             </Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <Button variant="contained" color="primary" onClick={() => {
                             if ((date_processed.getTime() !== empty_date.getTime()) && (pool_status !== '')) {
                                     this.processPool(); this.processTest(temp_res)
