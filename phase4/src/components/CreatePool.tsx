@@ -69,6 +69,8 @@ class CreatePool extends React.Component<createPoolProps, createPoolState> {
                     .then((results: any[]) => {
                         this.loadTests();
                     })
+                } else if (res.sqlMessage === "This Pool ID Already Exists") {
+                    alert("This pool ID already exists, please select a new pool ID");
                 }
             })
             .catch((err) => {

@@ -119,13 +119,25 @@ class ReassignTester extends React.Component<reassignTesterProps, reassignTester
             addedSites.forEach((site: string) => paths.push(`http://localhost:8080/assign_tester?'${testers[i].username}','${site}'`));
             removedSites.forEach((site: string) => paths.push(`http://localhost:8080/unassign_tester?'${testers[i].username}','${site}'`));
         }
-
-        console.log(paths);
-
+        
         Promise.map(paths, (path: string) => {
             return fetch(path)
         })
         .then((results: any[]) => {
+            results.forEach((result) => {
+                result.json().then((result: any) => {
+                    if (result.code === 'ER_SIGNAL_EXCEPTION') {
+                        const user = result.sql.substring(41).split("'")[0];
+                        const location = result.sql.substring(41).split("'")[2];
+                        if (result.sqlMessage === 'This tester is the only one at this site') {
+                            alert(`Cannot remove ${user} from ${location} because ${user} is the only tester currently assigned to ${location}`);
+                        } else if (result.sqlMessage === 'There are too many tests at this location to remove this tester') {
+                            alert(`There are too many tests at ${location} to remove ${user}`);
+                        }
+                    }
+                });
+            });
+            
             this.loadTesters();
         })
     }
