@@ -49,12 +49,14 @@ class ViewTestResults extends React.Component<viewTestResultsProps, viewTestResu
                 let temp: testResults[] = [];
                 result.result.forEach((e: any) => {
                     let tr: testResults = e;
-                    tr.timeslot_date = tr.timeslot_date.substring(0,10);
-                    if (tr.date_processed !== null) {
-                        tr.date_processed = tr.date_processed.substring(0,10);
+                    if (e.test_id !== null) {
+                        tr.timeslot_date = tr.timeslot_date.substring(0,10);
+                        if (tr.date_processed !== null) {
+                            tr.date_processed = tr.date_processed.substring(0,10);
+                        }
+                        tr.test_link = "/exploreTestResult/?" + tr.test_id;
+                        temp.push(tr);
                     }
-                    tr.test_link = "/exploreTestResult/?" + tr.test_id;
-                    temp.push(tr);
                 })
                 this.setState({test_results: temp})
             })
