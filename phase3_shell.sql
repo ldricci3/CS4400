@@ -508,6 +508,11 @@ CREATE PROCEDURE create_pool(
 )
 BEGIN
 -- Type solution below
+IF (SELECT count(*) as poolCheck FROM pool WHERE pool_id = i_pool_id) > 0 THEN 	
+	SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'This Pool ID Already Exists';
+END IF;
+
 IF (SELECT pool_id FROM test WHERE test_id = i_test_id) IS NULL 
 AND (SELECT pool_id FROM pool WHERE pool_id = i_pool_id) IS NULL
 AND (SELECT test_id FROM test where test_id = i_test_id) IS NOT NULL THEN
