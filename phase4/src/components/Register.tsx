@@ -315,6 +315,7 @@ class Register extends React.Component<registerProps, registerState> {
                         </Button>
                     </Grid>
                 </Grid>
+                <Grid item xs={12}></Grid>
                 {error && <p>{error}</p>}
             </Grid>
         );
