@@ -13,6 +13,8 @@ import { parse } from 'url';
 import Radio from '@material-ui/core/Radio';
 import {AppBar, Tabs, Tab} from '@material-ui/core';
 import {RadioGroup, FormControl, FormControlLabel} from '@material-ui/core';
+var _ = require('lodash');
+
 //import TabPanel from '@material-ui/lab/TabPanel';
 
 class ProcessPool extends React.Component<processPoolProps, processPoolState> {
@@ -145,7 +147,12 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
             rows.push({
                 test_id: t.test_id,
                 date_tested: t.date_tested,
-                select: <Select defaultValue='negative' onChange={(event) => t.test_result= `${event.target.value}`}>
+                select: <Select defaultValue='negative' onChange={(event) => {
+                    const index = tests.findIndex((e) => e.test_id = t.test_id);
+                    let copy: test[] = _.cloneDeep(tests);
+                    copy[index].test_result = `${event.target.value}`;
+                    this.setState({tests: copy})
+                }}>
                             <MenuItem value={"positive"}>Positive</MenuItem>
                             <MenuItem value={"negative"}>Negative</MenuItem>
                         </Select>
@@ -223,9 +230,9 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
         /**
          * Redirects the user to the home page if they do not have permissions to be on the page
          */
-        if (!this.props.user.isLabTech){ //|| tests[0].date_processed !== undefined) {
-            return (<Redirect to={'/home'}></Redirect>)
-        }
+        // if (!this.props.user.isLabTech){ //|| tests[0].date_processed !== undefined) {
+        //     return (<Redirect to={'/home'}></Redirect>)
+        // }
 
         return (
             <Grid container justify={'center'} spacing={3}>
@@ -296,7 +303,7 @@ class ProcessPool extends React.Component<processPoolProps, processPoolState> {
                     <Grid item>
                         <Button variant="contained" color="primary" onClick={() => {
                             if ((date_processed.getTime() !== empty_date.getTime()) && (pool_status !== '')) {
-                                    this.processPool(); this.processTest(temp_res)
+                                    this.processPool(); this.processTest(tests)
                                 } else {
                                     this.setState({success: 'please fill in all fields'});
                                 }

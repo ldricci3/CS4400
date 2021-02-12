@@ -118,7 +118,7 @@ class Register extends React.Component<registerProps, registerState> {
         const differentPasswords = confirmPassword.length > 0 && password !== confirmPassword;
         const validEmail: boolean = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email) && email.length < 25 && email.length >= 5;
 
-        const canRegister = username.length > 0 && validEmail && firstname.length > 0 && lastname.length > 0 && password.length > 7 && password === confirmPassword && //user general stuff 
+        const canRegister = username.length > 0 && validEmail && firstname.length > 0 && lastname.length > 0 && password === confirmPassword && //user general stuff 
         ((tab === 0 && housingType !== '' && location !== '' && phoneNumber === '' && !isSiteTester && !isLabTech) || //requirements for students
         (tab === 1 && housingType === '' && location === '' && phoneNumber.length === 10 && /^\d+$/.test(phoneNumber) && (isSiteTester || isLabTech))) //requirements for employees
         
